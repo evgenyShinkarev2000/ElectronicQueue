@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { AppFormValidationService} from "../../services/app-form-validation.service";
+import {FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-log-in-form',
   templateUrl: './log-in-form.component.html',
-  styleUrls: ['./log-in-form.component.scss', '../entry-window.component.scss'],
-  providers: [AppFormValidationService]
+  styleUrls: ['./log-in-form.component.scss', '../entry-window.component.scss']
 })
 export class LogInFormComponent implements OnInit {
 
-  constructor(public validationService: AppFormValidationService) { }
+  @Input() validationService: AppFormValidationService;
+  @Input() parentFormGroup: FormGroup;
+
+  constructor() { }
 
   ngOnInit(): void {
   }

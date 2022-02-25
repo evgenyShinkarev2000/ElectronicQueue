@@ -1,1 +1,21 @@
-<p>log-in-form works!</p>
+<div [formGroup]="parentFormGroup">
+  <div class="form-group">
+    <label>
+      <input type="text" class="form-control" placeholder="Имя" formControlName="firstName">
+      <div class="text-danger">
+        <small *ngIf="validationService.isFirstNameInvalid() && validationService.isFirstNameEmpty()">Поле
+          обязательно</small>
+      </div>
+    </label>
+  </div>
+  <div class="form-group" [formGroup]="parentFormGroup">
+    <label>
+      <input type="password" class="form-control" placeholder="Фамилия" formControlName="secondName">
+      <div class="text-danger">
+        <small *ngIf="validationService.isSecondNameInvalid() && validationService.isPasswordEmpty()">Поле
+          обязательно</small>
+      </div>
+    </label>
+  </div>
+</div>
+

@@ -8,8 +8,36 @@ import {publish} from "rxjs";
 export class AppFormValidationService {
   public loginFormControl: FormControl;
   public passwordFormControl: FormControl;
+  public firstNameFormControl: FormControl;
+  public secondNameFormControl: FormControl;
 
   constructor() {
+  }
+
+  public getFirstNameValidator(): FormControl {
+    this.firstNameFormControl = new FormControl(null, [Validators.required]);
+    return this.firstNameFormControl;
+  }
+
+  public isFirstNameInvalid(): boolean {
+    return this.isFormControlInvalid(this.firstNameFormControl);
+  }
+
+  public isFirstNameEmpty(): boolean {
+    return this.isError(this.firstNameFormControl, "required");
+  }
+
+  public getSecondNameValidator(): FormControl {
+    this.secondNameFormControl = new FormControl(null, [Validators.required]);
+    return this.secondNameFormControl;
+  }
+
+  public isSecondNameInvalid(): boolean {
+    return this.isFormControlInvalid(this.secondNameFormControl);
+  }
+
+  public isSecondNameEmpty(): boolean {
+    return this.isError(this.secondNameFormControl, "required");
   }
 
   public getLoginValidator(): FormControl {

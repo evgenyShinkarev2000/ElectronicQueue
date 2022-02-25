@@ -1,7 +1,8 @@
-.btn:disabled{
+.btn:disabled {
   opacity: 0.5;
   color: red;
 }
+
 input {
   &.ng-invalid.ng-touched.ng-dirty {
     border: 1px solid lightcoral;
@@ -11,35 +12,48 @@ input {
     border: 1px solid lightgreen;
   }
 }
-.form-group{
-  label{
+
+.form-group {
+  label {
     width: 100%;
   }
 }
-.logo-img{
+
+.logo-img {
   width: 5rem;
 }
-section{
+
+section {
   margin: 10rem auto 1rem auto;
-  .container{
-    h2{
+
+  .container {
+    h2 {
       text-align: center;
       display: block;
       margin: 1rem auto;
     }
   }
 }
-.container-btn{
+
+.submit-btn-container {
   text-align: center;
-  button{
+
+  button {
     width: 100%;
   }
 }
-.text-danger{
-  height: 1.5rem;
-  small{
-    vertical-align: top;
+.form-group {
+  .text-danger {
+    height: 1.5rem;
+
+    small {
+      vertical-align: top;
+    }
   }
+}
+
+.select-mode-btn-container {
+  text-align: center;
 }
 
 

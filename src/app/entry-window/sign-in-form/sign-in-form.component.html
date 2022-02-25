@@ -1,4 +1,4 @@
-<form [formGroup]="signForm" (ngSubmit)="submit()">
+<div [formGroup]="parentFormGroup">
   <div class="form-group">
     <label>
       <input type="text" class="form-control" placeholder="Логин" formControlName="login">
@@ -7,15 +7,13 @@
       </div>
     </label>
   </div>
-  <div class="form-group">
+  <div class="form-group" [formGroup]="parentFormGroup">
     <label>
       <input type="password" class="form-control" placeholder="Пароль" formControlName="password">
       <div class="text-danger">
-        <small *ngIf="validationService.isPasswordInvalid() && validationService.isPasswordEmpty()">Поле обязательно</small>
+        <small *ngIf="validationService.isPasswordInvalid() && validationService.isPasswordEmpty()">Поле
+          обязательно</small>
       </div>
     </label>
   </div>
-  <div class="container-btn">
-    <button type="submit" class="btn btn-primary" [disabled]="signForm?.invalid">Submit</button>
-  </div>
-</form>
+</div>
