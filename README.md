@@ -29,7 +29,7 @@
 * ![alttext](./readme_files/ElectronicQueue.drawio.png)
 ***
 ## 4. Технологический стек
-* frontend: angular, scss, html.
+* frontend: angular, scss, html, bootstrap.
 * backend, если будет: asp или express, mongodb + framework для работы с бд.
 * Библиотека для авторизации пользователей ещё не выбрана.
 * Развертывание frontend может быть выполнено на [vercel](vercel.com), 
