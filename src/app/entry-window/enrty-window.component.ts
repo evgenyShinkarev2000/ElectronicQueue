@@ -1,8 +1,8 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {FormGroup} from "@angular/forms";
 import {AppFormValidationService} from "../services/app-form-validation.service";
 
-enum SubmitButtonStates{
+enum SubmitButtonStates {
   LogIn,
   SignUp
 }
@@ -19,35 +19,35 @@ export class EntryWindowComponent implements OnInit {
   public submitButtonName: string = "войти";
   public submitButtonPossibleStates = SubmitButtonStates;
   public submitButtonState: SubmitButtonStates = SubmitButtonStates.LogIn;
-  private submitButtonNameSelector: {[key in SubmitButtonStates]: string} = {
+  private readonly submitButtonNameSelector: { [key in SubmitButtonStates]: string } = {
     [SubmitButtonStates.LogIn]: "Войти",
     [SubmitButtonStates.SignUp]: "Зарегистрироваться"
   }
 
   constructor(public validationService: AppFormValidationService) {
     this.signForm = new FormGroup({
-      login: validationService.getLoginValidator(),
-      password: validationService.getPasswordValidator()
+      [validationService.login.formControlName]: validationService.login.formControl,
+      [validationService.password.formControlName]: validationService.password.formControl
     });
   }
 
   ngOnInit(): void {
   }
 
-  public submit(){}
-  public ChangeMode(){
+  public submit() {
+  }
+
+  public ChangeMode() {
     if (this.submitButtonState === this.submitButtonPossibleStates.SignUp) {
       this.submitButtonState = this.submitButtonPossibleStates.LogIn;
-      this.signForm.removeControl("firstName");
-      this.signForm.removeControl("secondName");
-    }
-    else {
+      this.signForm.removeControl(this.validationService.firstName.formControlName);
+      this.signForm.removeControl(this.validationService.secondName.formControlName);
+    } else {
       this.submitButtonState = this.submitButtonPossibleStates.SignUp;
-      this.signForm.addControl("firstName", this.validationService.getFirstNameValidator());
-      this.signForm.addControl("secondName", this.validationService.getSecondNameValidator());
+      this.signForm.addControl(this.validationService.firstName.formControlName, this.validationService.firstName.formControl);
+      this.signForm.addControl(this.validationService.secondName.formControlName, this.validationService.secondName.formControl);
     }
 
     this.submitButtonName = this.submitButtonNameSelector[this.submitButtonState];
   }
-
 }

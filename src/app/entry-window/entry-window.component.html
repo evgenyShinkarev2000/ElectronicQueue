@@ -1,14 +1,14 @@
 <section class="container">
   <div class="row">
-    <div class="container col-12 col-sm-9 col-md-6 col-lg-5 col-xl-4">
+    <div class="container col-12 col-sm-9 col-md-6 col-lg-5 col-xl-4 border">
       <!--      <img src="./assets/img/queue-transparent.png" class="logo-img">-->
       <h2>Электронная очередь</h2>
       <form [formGroup]="signForm" (ngSubmit)="submit()">
-        <app-sign-in-form [validationService]="validationService" [parentFormGroup]="signForm"></app-sign-in-form>
-        <app-log-in-form *ngIf="submitButtonState === submitButtonPossibleStates.SignUp"
+        <app-log-in-form [validationService]="validationService" [parentFormGroup]="signForm"></app-log-in-form>
+        <app-sign-in-form *ngIf="submitButtonState === submitButtonPossibleStates.SignUp"
                          [parentFormGroup]="signForm"
                          [validationService]="validationService"
-        ></app-log-in-form>
+        ></app-sign-in-form>
         <div class="submit-btn-container">
           <button type="submit" class="btn btn-primary" [disabled]="signForm?.invalid">{{submitButtonName}}</button>
         </div>
