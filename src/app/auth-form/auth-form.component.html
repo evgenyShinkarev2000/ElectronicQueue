@@ -1,0 +1,17 @@
+<section class="row">
+  <div class="col-12 col-sm-9 col-md-6 col-lg-5 col-xl-3 container border">
+    <div class="form-item text-center">
+      <h2>Электронная очередь</h2>
+    </div>
+    <form [formGroup]="authForm">
+      <app-form-control
+        class="form-item"
+        *ngFor="let formControlExtension of authFormControlExtensions"
+        [formControlExtension]="formControlExtension"
+        [parentFormGroup]="authForm"></app-form-control>
+      <app-submit-button class="form-item" [authForm]="authForm"
+                         [formState]="formState" [validService]="validService"></app-submit-button>
+    </form>
+    <app-change-mode-button class="form-item" [formState]="formState" (formStateChangeEvent)="onChangeModeClick()"></app-change-mode-button>
+  </div>
+</section>

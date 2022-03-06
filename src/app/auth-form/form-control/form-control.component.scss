@@ -1,0 +1,20 @@
+.form-group {
+  input {
+    &.ng-invalid.ng-touched.ng-dirty {
+      border: 1px solid lightcoral;
+    }
+
+    &.ng-valid.ng-touched {
+      border: 1px solid lightgreen;
+    }
+  }
+
+  .error-message-block {
+    min-height: 1.6rem;
+    margin-top: -0.3rem;
+
+    small {
+      display: inline-block;
+    }
+  }
+}

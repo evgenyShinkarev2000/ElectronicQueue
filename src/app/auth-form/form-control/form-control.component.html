@@ -1,0 +1,10 @@
+<div class="form-group" [formGroup]="parentFormGroup">
+  <input class="form-control" [type]="formControlExtension.type"
+         [placeholder]="formControlExtension.placeHolder"
+         [formControlName]="formControlExtension.name">
+  <div class="text-danger error-message-block">
+    <div *ngIf="formControlExtension.dirty && formControlExtension.invalid">
+      <small *ngFor="let errorMessage of formControlExtension.errorMessages">{{errorMessage}}</small>
+    </div>
+  </div>
+</div>

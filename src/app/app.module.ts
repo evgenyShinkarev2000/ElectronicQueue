@@ -1,27 +1,49 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { EntryWindowComponent } from './entry-window/enrty-window.component';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import { SignInFormComponent } from './entry-window/sign-in-form/sign-in-form.component';
-import { LogInFormComponent } from './entry-window/log-in-form/log-in-form.component';
+import {AuthenticationPassedMockComponent} from './authentication-passed-mock/authentication-passed-mock.component';
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {AuthService} from "./services/auth.service";
+import {JwtModule} from "@auth0/angular-jwt";
+import {AuthFormComponent} from './auth-form/auth-form.component';
+import {SubmitButtonComponent} from './auth-form/submit-button/submit-button.component';
+import {ChangeModeButtonComponent} from './auth-form/change-mode-button/change-mode-button.component';
+import {FormControlComponent} from './auth-form/form-control/form-control.component';
+
+const HTTP_AUTH_INTERCEPTOR = {
+  provide: HTTP_INTERCEPTORS,
+  useClass: AuthService,
+  multi: true
+}
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    EntryWindowComponent,
-    SignInFormComponent,
-    LogInFormComponent,
+    AuthenticationPassedMockComponent,
+    AuthFormComponent,
+    SubmitButtonComponent,
+    ChangeModeButtonComponent,
+    FormControlComponent
   ],
   imports: [
+
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule,
+    JwtModule.forRoot({
+      config:{
+        tokenGetter: () => localStorage.getItem("auth-token"),
+        allowedDomains: ["https://localhost:44315"],
+        disallowedRoutes: []
+      }
+    })
   ],
-  providers: [],
+  providers:[HTTP_AUTH_INTERCEPTOR],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

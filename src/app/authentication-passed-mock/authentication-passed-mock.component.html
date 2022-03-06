@@ -1,0 +1,13 @@
+<link rel="stylesheet" href="authentication-passed-mock.component.scss">
+<div class="container">
+  <div class="center border">
+    <h2>Успешный вход</h2>
+    <h4>Пользователи</h4>
+    <div>
+      <p *ngFor="let user of users">{{user}}</p>
+    </div>
+    <button class="btn btn-primary" type="button" (click)="getUsers()">Загрузить пользователей</button>
+    <br>
+    <button class="btn btn-danger" type="button" (click)="exit()">Выход</button>
+  </div>
+</div>

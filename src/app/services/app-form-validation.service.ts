@@ -1,64 +1,114 @@
-import {Injectable} from '@angular/core';
-import {FormControl, ValidatorFn, Validators} from "@angular/forms";
+import {Attribute, Injectable, Input} from '@angular/core';
+import {FormControl, ValidationErrors, ValidatorFn, Validators} from "@angular/forms";
 
+//https://stackoverflow.com/questions/59504750/input-types-in-typescript-interface
+type HTMLInputTypeAttribute =
+  "button"
+  | "checkbox"
+  | "color"
+  | "date"
+  | "datetime-local"
+  | "email"
+  | "file"
+  | "hidden"
+  | "image"
+  | "month"
+  | "number"
+  | "password"
+  | "radio"
+  | "range"
+  | "reset"
+  | "search"
+  | "submit"
+  | "tel"
+  | "text"
+  | "time"
+  | "url"
+  | "week";
 
-export class FormControlValidator {
-  public readonly formControlName: string;
-  public readonly formControl: FormControl;
+interface InputAttributes {
+  placeHolder?: string,
+  type?: HTMLInputTypeAttribute
+}
 
-  constructor(name: string, validatorFn: ValidatorFn | ValidatorFn[]) {
-    this.formControl = new FormControl(null, validatorFn);
-    this.formControlName = name;
+export interface ValidationErrorName {
+  hasError: boolean,
+  errorMessage: string
+}
+
+export class FormControlExtension extends FormControl {
+  public readonly name: string;
+  public readonly placeHolder: string;
+  public readonly type: HTMLInputTypeAttribute;
+
+  constructor(
+    name: string,
+    validatorFn?: ValidatorFn | ValidatorFn[],
+    attributes?: InputAttributes
+  ) {
+    super(null, validatorFn);
+
+    if (!name)
+      throw new Error("Требуется имя для FormControl");
+
+    this.placeHolder = attributes?.placeHolder ?? name;
+    this.type = attributes?.type ?? "text";
+    this.name = name;
   }
 
-  public get isInvalid(): boolean {
-    return this.formControl.invalid;
-  }
+  public get errorMessages(): string[] {
+    const selector: { [key: string]: string } = {
+      "required": "Поле Обязательно"
+    };
 
-  public get isDirty(): boolean {
-    return this.formControl.dirty;
-  }
+    const errors = Object.keys(this.errors).filter(errorName => this.errors[errorName]);
+    const errorMessages: string[] = [];
 
-  public get isEmpty(): boolean {
-    return this.isError("required");
-  }
+    errors.forEach(errorName =>
+      errorMessages.push(errorName in selector ? selector[errorName] : `Неизвестная ошибка ${errorName}`));
 
-  private isError(errorName: string): boolean {
-    return this.formControl.errors?.[errorName];
+    return errorMessages;
   }
 }
 
 @Injectable()
 export class AppFormValidationService {
-  private _login: FormControlValidator;
-  private _password: FormControlValidator;
-  private _firstName: FormControlValidator;
-  private _secondName: FormControlValidator;
+  private _login: FormControlExtension;
+  private _password: FormControlExtension;
+  private _firstName: FormControlExtension;
+  private _secondName: FormControlExtension;
 
-  public get login(): FormControlValidator {
-    if (this._login === undefined)
-      this._login = new FormControlValidator("login", Validators.required);
+  constructor() {
+  }
+
+  public get login(): FormControlExtension {
+    if (!this._login)
+      this._login = new FormControlExtension("login", Validators.required, {placeHolder: "Логин"});
+
     return this._login;
   }
 
-  public get password(): FormControlValidator {
-    if (this._password === undefined)
-      this._password = new FormControlValidator("password", Validators.required);
+  public get password(): FormControlExtension {
+    if (!this._password)
+      this._password = new FormControlExtension("password", Validators.required, {
+        placeHolder: "Пароль",
+        type: "password"
+      });
+
     return this._password;
   }
 
-  public get firstName(): FormControlValidator {
-    if (this._firstName === undefined)
-      this._firstName = new FormControlValidator("firstName", Validators.required);
+  public get firstName(): FormControlExtension {
+    if (!this._firstName)
+      this._firstName = new FormControlExtension("firstName", Validators.required, {placeHolder: "Имя"});
+
     return this._firstName;
   }
 
-  public get secondName(): FormControlValidator {
-    if (this._secondName === undefined)
-      this._secondName = new FormControlValidator("secondName", Validators.required);
-    return this._secondName;
-  }
+  public get secondName(): FormControlExtension {
+    if (!this._secondName)
+      this._secondName = new FormControlExtension("secondName", Validators.required, {placeHolder: "Фамилия"});
 
-  constructor() {
+    return this._secondName;
   }
 }
