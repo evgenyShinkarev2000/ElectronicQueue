@@ -12,7 +12,7 @@ export interface AuthData {
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements CanActivate, HttpInterceptor {
+export class AuthService implements CanActivate {
   constructor(private httpClient: HttpClient, private jwtHelper: JwtHelperService, private router: Router) {
   }
 
@@ -50,15 +50,5 @@ export class AuthService implements CanActivate, HttpInterceptor {
 
     this.router.navigate(["login"]);
     return false;
-  }
-
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const cloned = req.clone({
-        headers: new HttpHeaders({
-            "Authorization": "Bearer " + localStorage.getItem("auth-token")
-          })
-      });
-
-    return next.handle(cloned);
   }
 }

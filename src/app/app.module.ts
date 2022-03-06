@@ -12,12 +12,6 @@ import {SubmitButtonComponent} from './auth-form/submit-button/submit-button.com
 import {ChangeModeButtonComponent} from './auth-form/change-mode-button/change-mode-button.component';
 import {FormControlComponent} from './auth-form/form-control/form-control.component';
 
-const HTTP_AUTH_INTERCEPTOR = {
-  provide: HTTP_INTERCEPTORS,
-  useClass: AuthService,
-  multi: true
-}
-
 
 @NgModule({
   declarations: [
@@ -38,12 +32,12 @@ const HTTP_AUTH_INTERCEPTOR = {
     JwtModule.forRoot({
       config:{
         tokenGetter: () => localStorage.getItem("auth-token"),
-        allowedDomains: ["https://localhost:44315"],
+        allowedDomains: [ "localhost:44315"],
         disallowedRoutes: []
       }
     })
   ],
-  providers:[HTTP_AUTH_INTERCEPTOR],
+  providers:[],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
