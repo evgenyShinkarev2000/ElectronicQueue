@@ -32,15 +32,24 @@ export class SubmitButtonComponent implements OnInit {
   }
 
   public async submit() {
-    const wasPassed = await this.authService.authWithPassword({
-      login: this.authForm.value[this.validService.login.name],
-      password: this.authForm.value[this.validService.password.name]
-    });
+    if (this.formState === FormStates.logIn) {
+      const wasPassed = await this.authService.authWithPassword({
+        login: this.authForm.value[this.validService.login.name],
+        password: this.authForm.value[this.validService.password.name]
+      });
 
-    if (wasPassed)
-      this.router.navigate(["main_window"]);
-      else{
+      if (wasPassed)
+        this.router.navigate(["main_window"]);
+      else {
         alert("Неверный логин или пароль");
+      }
+    } else if(this.formState === FormStates.signUp){
+      const wasPassed = await this.authService.register({
+        login: this.authForm.value[this.validService.login.name],
+        password: this.authForm.value[this.validService.password.name],
+        firstName: this.authForm.value[this.validService.firstName.name],
+        secondName: this.authForm.value[this.validService.secondName.name]
+      });
     }
   }
 

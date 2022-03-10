@@ -11,6 +11,10 @@ import {AuthFormComponent} from './auth-form/auth-form.component';
 import {SubmitButtonComponent} from './auth-form/submit-button/submit-button.component';
 import {ChangeModeButtonComponent} from './auth-form/change-mode-button/change-mode-button.component';
 import {FormControlComponent} from './auth-form/form-control/form-control.component';
+import {NgxPermissionsModule} from "ngx-permissions";
+import { UserFunctionMockComponent } from './authentication-passed-mock/user-function-mock/user-function-mock.component';
+import { OperatorFunctionMockComponent } from './authentication-passed-mock/operator-function-mock/operator-function-mock.component';
+import { AdminFunctionMockComponent } from './authentication-passed-mock/admin-function-mock/admin-function-mock.component';
 
 
 @NgModule({
@@ -20,7 +24,10 @@ import {FormControlComponent} from './auth-form/form-control/form-control.compon
     AuthFormComponent,
     SubmitButtonComponent,
     ChangeModeButtonComponent,
-    FormControlComponent
+    FormControlComponent,
+    UserFunctionMockComponent,
+    OperatorFunctionMockComponent,
+    AdminFunctionMockComponent
   ],
   imports: [
 
@@ -35,7 +42,8 @@ import {FormControlComponent} from './auth-form/form-control/form-control.compon
         allowedDomains: [ "localhost:44315"],
         disallowedRoutes: []
       }
-    })
+    }),
+    NgxPermissionsModule.forRoot()
   ],
   providers:[],
   bootstrap: [AppComponent]
