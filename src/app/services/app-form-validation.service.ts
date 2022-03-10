@@ -1,5 +1,5 @@
-import {Attribute, Injectable, Input} from '@angular/core';
-import {FormControl, ValidationErrors, ValidatorFn, Validators} from "@angular/forms";
+import { Attribute, Injectable, Input } from '@angular/core';
+import { FormControl, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
 
 //https://stackoverflow.com/questions/59504750/input-types-in-typescript-interface
 type HTMLInputTypeAttribute =
@@ -26,12 +26,12 @@ type HTMLInputTypeAttribute =
   | "url"
   | "week";
 
-interface InputAttributes {
+interface IInputAttributes {
   placeHolder?: string,
   type?: HTMLInputTypeAttribute
 }
 
-export interface ValidationErrorName {
+export interface IValidationErrorName {
   hasError: boolean,
   errorMessage: string
 }
@@ -44,12 +44,13 @@ export class FormControlExtension extends FormControl {
   constructor(
     name: string,
     validatorFn?: ValidatorFn | ValidatorFn[],
-    attributes?: InputAttributes
+    attributes?: IInputAttributes
   ) {
     super(null, validatorFn);
 
-    if (!name)
+    if (!name) {
       throw new Error("Требуется имя для FormControl");
+    }
 
     this.placeHolder = attributes?.placeHolder ?? name;
     this.type = attributes?.type ?? "text";
@@ -61,10 +62,10 @@ export class FormControlExtension extends FormControl {
       "required": "Поле Обязательно"
     };
 
-    const errors = Object.keys(this.errors).filter(errorName => this.errors[errorName]);
+    const errors: string[] = Object.keys(this.errors).filter((errorName: string) => this.errors[errorName]);
     const errorMessages: string[] = [];
 
-    errors.forEach(errorName =>
+    errors.forEach((errorName: string) =>
       errorMessages.push(errorName in selector ? selector[errorName] : `Неизвестная ошибка ${errorName}`));
 
     return errorMessages;
@@ -89,25 +90,28 @@ export class AppFormValidationService {
   }
 
   public get password(): FormControlExtension {
-    if (!this._password)
+    if (!this._password) {
       this._password = new FormControlExtension("password", Validators.required, {
         placeHolder: "Пароль",
         type: "password"
       });
+    }
 
     return this._password;
   }
 
   public get firstName(): FormControlExtension {
-    if (!this._firstName)
+    if (!this._firstName) {
       this._firstName = new FormControlExtension("firstName", Validators.required, {placeHolder: "Имя"});
+    }
 
     return this._firstName;
   }
 
   public get secondName(): FormControlExtension {
-    if (!this._secondName)
+    if (!this._secondName) {
       this._secondName = new FormControlExtension("secondName", Validators.required, {placeHolder: "Фамилия"});
+    }
 
     return this._secondName;
   }

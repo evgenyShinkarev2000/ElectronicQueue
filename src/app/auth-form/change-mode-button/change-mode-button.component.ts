@@ -1,29 +1,30 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormStates} from "../auth-form.component";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormStates } from "../auth-form.component";
 
 @Component({
   selector: 'app-change-mode-button',
   templateUrl: './change-mode-button.component.html',
   styleUrls: ['./change-mode-button.component.scss']
 })
-export class ChangeModeButtonComponent implements OnInit {
-  @Input() formState: FormStates;
-  @Output() formStateChangeEvent = new EventEmitter<void>();
-  private readonly _changeModeButtonNameSelector: {[key in FormStates]: string} = {
-    [FormStates.logIn]: "Регистрация",
-    [FormStates.signUp]: "Вход"
-  }
+export class ChangeModeButtonComponent {
+  @Input()
+  public formState: FormStates;
+  @Output()
+  public formStateChangeEvent: EventEmitter<void> = new EventEmitter<void>();
 
-  public get changeModeButtonName(): string{
+  public get changeModeButtonName(): string {
     return this._changeModeButtonNameSelector[this.formState];
   }
 
-  constructor() { }
+  private readonly _changeModeButtonNameSelector: { [key in FormStates]: string } = {
+    [FormStates.logIn]: "Регистрация",
+    [FormStates.signUp]: "Вход"
+  };
 
-  ngOnInit(): void {
+  constructor() {
   }
 
-  public changeFormState(){
+  public changeFormState(): void {
     this.formStateChangeEvent.emit();
   }
 

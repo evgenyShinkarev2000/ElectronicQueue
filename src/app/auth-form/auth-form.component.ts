@@ -1,8 +1,8 @@
-import {AfterContentInit, Component, OnInit} from '@angular/core';
-import {FormGroup} from "@angular/forms";
-import {AppFormValidationService, FormControlExtension} from "../services/app-form-validation.service";
-import {Location} from "@angular/common";
-import {Router} from "@angular/router";
+import { AfterContentInit, Component, OnInit } from '@angular/core';
+import { FormGroup } from "@angular/forms";
+import { AppFormValidationService, FormControlExtension } from "../services/app-form-validation.service";
+import { Location } from "@angular/common";
+import { Router } from "@angular/router";
 
 export enum FormStates {
   logIn,
@@ -15,42 +15,43 @@ export enum FormStates {
   styleUrls: ['./auth-form.component.scss'],
   providers: [AppFormValidationService]
 })
-export class AuthFormComponent implements OnInit, AfterContentInit {
+export class AuthFormComponent implements AfterContentInit {
+  public formState: FormStates = FormStates.logIn;
+  public authFormControlExtensions: FormControlExtension[];
+  public authForm: FormGroup;
+
   private readonly _loginFormControlExtensions: FormControlExtension[] =
     [this.validService.login, this.validService.password];
 
   private readonly _signupFormControlExtensions: FormControlExtension[] =
     [this.validService.firstName, this.validService.secondName];
 
-  public formState: FormStates = FormStates.logIn;
-  public authFormControlExtensions = this._loginFormControlExtensions.slice();
-  public authForm: FormGroup;
 
   constructor(
     public validService: AppFormValidationService,
-    private location: Location,
-    private router: Router) {
+    private _location: Location,
+    private _router: Router,
+  ) {
     this.authForm = new FormGroup({
       [this.validService.login.name]: this.validService.login,
       [this.validService.password.name]: this.validService.password
     });
+    this.authFormControlExtensions = this._loginFormControlExtensions.slice();
   }
 
-  ngOnInit(): void {
-  }
-
-  ngAfterContentInit(): void {
+  public ngAfterContentInit(): void {
     const selector: { [key: string]: FormStates } = {
       "login": FormStates.logIn,
       "signup": FormStates.signUp
     };
-    const url = this.router.url.slice(1);
-    if (url in selector && this.formState !== selector[url])
+    const url: string = this._router.url.slice(1);
+    if (url in selector && this.formState !== selector[url]) {
       this.onChangeModeClick();
+    }
   }
 
   public onChangeModeClick(): void {
-    const formStatesCount = Object.keys(FormStates).length / 2;
+    const formStatesCount: number = Object.keys(FormStates).length / 2;
     this.formState = (this.formState + 1) % formStatesCount;
     this.handleFormControls();
   }
@@ -60,25 +61,27 @@ export class AuthFormComponent implements OnInit, AfterContentInit {
       [FormStates.logIn]: () => {
         this.removeControls(this._signupFormControlExtensions);
         this.authFormControlExtensions = this._loginFormControlExtensions.slice();
-        this.location.go("login");
+        this._location.go("login");
       },
       [FormStates.signUp]: () => {
         this.addControls(this._signupFormControlExtensions);
         this.authFormControlExtensions.push(...this._signupFormControlExtensions);
-        this.location.go("signup");
+        this._location.go("signup");
       }
-    }
-
-    selectHandler[this.formState]()
+    };
+    selectHandler[this.formState]();
   }
 
-  private addControls(formControlExtensions: FormControlExtension[]) {
-    formControlExtensions.forEach(formControlExtension => this.authForm.addControl(
-      formControlExtension.name, formControlExtension
-    ));
+  private addControls(formControlExtensions: FormControlExtension[]): void {
+    formControlExtensions.forEach((formControlExtension: FormControlExtension) =>
+      this.authForm.addControl(
+        formControlExtension.name, formControlExtension
+      ));
   }
 
-  private removeControls(formControlExtensions: FormControlExtension[]) {
-    formControlExtensions.forEach(formControlExtension => this.authForm.removeControl(formControlExtension.name));
+  private removeControls(formControlExtensions: FormControlExtension[]): void {
+    formControlExtensions.forEach((formControlExtension: FormControlExtension) =>
+      this.authForm.removeControl(formControlExtension.name));
   }
+
 }
