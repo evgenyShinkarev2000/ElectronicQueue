@@ -1,0 +1,19 @@
+header{
+  nav{
+    div.navbar-left-block{
+      font-size: 1.5em;
+    }
+    ul.navbar-right-block{
+      li{
+        height: fit-content;
+        margin-left: 2rem;
+        a{
+          text-decoration: none;
+          &.active{
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+}

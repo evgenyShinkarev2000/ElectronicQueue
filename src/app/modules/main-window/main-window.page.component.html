@@ -1,0 +1,22 @@
+<header class="border-bottom shadow-sm mb-4">
+  <nav class="py-4">
+    <div class="container-xl d-flex justify-content-between align-content-center">
+      <div class="navbar-left-block d-flex">
+        <a class="text-black text-decoration-none" routerLink="">Электронная очередь</a>
+      </div>
+      <ul class="navbar-right-block list-unstyled d-flex m-0 align-items-center">
+        <li class="d-flex" *ngFor="let link of links">
+          <!-- Надо убрать лишние пробелы -->
+          <a class="" *ngxPermissionsOnly="link.ngxOnly" [routerLink]="link.routerLink"
+             routerLinkActive="active">{{link.text}}</a>
+        </li>
+        <li class="ms-4 d-flex">
+          <button class="btn btn-outline-danger btn-sm" type="button" (click)="logOut()">Выход</button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+<main>
+  <router-outlet></router-outlet>
+</main>
