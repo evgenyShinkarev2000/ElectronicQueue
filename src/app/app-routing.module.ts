@@ -2,18 +2,21 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthenticationPassedMockComponent } from "./authentication-passed-mock/authentication-passed-mock.component";
 import { AuthService } from "./services/auth.service";
-import { AuthFormComponent } from "./auth-form/auth-form.component";
+import { AuthFormPageComponent } from "./auth-form/auth-form.page.component";
+import { ErrorPageComponent } from "./error/error.page.component";
+import { MainWindowComponent } from "./main-window/main-window.page.component";
 
 const routes: Routes = [
-  { path: "", redirectTo: "main_window", pathMatch: "full" },
-  { path: "main_window", component: AuthenticationPassedMockComponent, canActivate: [AuthService] },
-  { path: "login", component: AuthFormComponent },
-  { path: "signup", component: AuthFormComponent }
+    { path: "", outlet: "app-page",  redirectTo: "main_window", pathMatch: "full" },
+    { path: "main_window", outlet: "app-page", component: MainWindowComponent, canActivate: [AuthService] },
+    { path: "login", outlet: "app-page", component: AuthFormPageComponent },
+    { path: "signup", outlet: "app-page", component: AuthFormPageComponent },
+    { path: "error_page", outlet: "app-page", component: ErrorPageComponent }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forRoot(routes)],
+    exports: [RouterModule]
 })
 export class AppRoutingModule {
 }

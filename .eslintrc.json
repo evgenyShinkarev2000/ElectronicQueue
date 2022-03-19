@@ -18,6 +18,10 @@
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
+      "plugins":
+      ["unused-imports",
+        "rxjs"
+      ],
       "rules": {
         "@angular-eslint/directive-selector": [
           "error",
@@ -37,7 +41,7 @@
         ],
         "prefer-const": "error",
         "semi": "error",
-        "unused-imports/no-unused-imports": "warn",
+        "unused-imports/no-unused-imports": "error",
         "padding-line-between-statements": [
           "error",
           {
@@ -209,9 +213,9 @@
           "error",
           "always"
         ],
-//        Заменил indent и quotes с error на off
+//        Заменил quotes с error на off
         "indent": [
-          "off",
+          "error",
           4,
           {
             "SwitchCase": 1
