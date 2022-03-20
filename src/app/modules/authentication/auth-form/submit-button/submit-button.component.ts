@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from "@angular/forms";
 import { FormStates } from "../auth-form.page.component";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "../../../../services/authentication/auth.service";
 import { Router } from "@angular/router";
-import { AppFormValidationService } from "../../view-models/form-validation/form-validation-model";
+import { AppFormValidationService } from "../../../../view-models/form-validation/form-validation-model";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
     selector: 'app-submit-button',
@@ -35,13 +36,13 @@ export class SubmitButtonComponent {
             this._authService.logIn({
                 login: this.authForm.value[this.validService.login.name],
                 password: this.authForm.value[this.validService.password.name]
-            }).subscribe(wasPassed => {
-                if (wasPassed){
+            }).subscribe((wasPassed: boolean) => {
+                if (wasPassed) {
                     this._router.navigate(["main_window"]);
                 } else {
                     alert("Неверный логин или пароль");
                 }
-            }, error => {
+            }, (error: HttpErrorResponse) => {
                 console.log("ошибка пролетела в submit, этого быть не должно");
                 console.log(error);
             });

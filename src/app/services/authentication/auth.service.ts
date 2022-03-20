@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { catchError, firstValueFrom, map, Observable, of, throwError } from "rxjs";
+import { catchError, map, Observable, of } from "rxjs";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { CanActivate, Router } from "@angular/router";
-import { NgxPermissionsService } from "ngx-permissions";
 import { ILoginData } from "./login-data.interface";
 import { IUserAuthData } from "./user-auth-data.interface";
 import { ISignupData } from "./signup-data.interface";
-import { LocalStorageManagerService } from "./local-storage-manager.service";
+import { LocalStorageService } from "../local-starage/local-storage.service";
+import { MyPermissionService } from "../permission/my-permission.service";
+import { UserRole } from "../permission/all-users-role.enum";
 
 
 @Injectable({
@@ -24,9 +25,23 @@ export class AuthService implements CanActivate {
     constructor(private _httpClient: HttpClient,
                 private _jwtHelper: JwtHelperService,
                 private _router: Router,
-                private _ngxPermissionsService: NgxPermissionsService,
-                private _localStorageManager: LocalStorageManagerService,
+                private _permissionService: MyPermissionService,
+                private _localStorageManager: LocalStorageService,
     ) {
+
+        // //ngxRoleService не работает
+        // const t = this.getRolesWithPermissions();
+        // debugger;
+        // _ngxRoleService.addRoles(t);
+        // const permission: string = _localStorageManager.loadUserAuthData()?.role;
+        // if (permission) {
+        //     _ngxPermissionsService.loadPermissions([permission]);
+        // }
+        if (this.isUserAuthenticated()) {
+            _router.navigate(["main_window"]);
+            this._permissionService
+                .loadPermission(this._localStorageManager.loadUserAuthData().role as unknown as UserRole);
+        }
     }
 
     public logIn(authData: ILoginData): Observable<boolean> {
@@ -41,9 +56,11 @@ export class AuthService implements CanActivate {
 
                 return of(false);//автоизация провалена
             }),
-            map((userData: IUserAuthData | boolean) => {
-                if (userData) {
-                    this._localStorageManager.saveUserAuthData(userData as IUserAuthData);
+            map((httpResponseBody: IUserAuthData | boolean) => {
+                if (httpResponseBody) {
+                    const userAuthData: IUserAuthData = httpResponseBody as IUserAuthData;
+                    this._localStorageManager.saveUserAuthData(userAuthData);
+                    this._permissionService.loadPermission(userAuthData.role as unknown as UserRole);
 
                     return true;
                 }
@@ -81,11 +98,11 @@ export class AuthService implements CanActivate {
 
     public logOut(): void {
         this._localStorageManager.clearLocalStorage();
-        this._ngxPermissionsService.flushPermissions();
+        this._permissionService.flushPermissions();
     }
 
     public isUserAuthenticated(): boolean {
-        const token: string = LocalStorageManagerService.tokenGetter();
+        const token: string = LocalStorageService.tokenGetter();
         if (token && !this._jwtHelper.isTokenExpired(token)) {
             return true;
         }
@@ -98,7 +115,8 @@ export class AuthService implements CanActivate {
             return true;
         }
 
-        this._router.navigate(["login"]);
+        // надо добавить отдельную страницу, чтобы юзер понимал, почему его перенаправило
+        this._router.navigate(["auth/login"]);
 
         return false;
     }

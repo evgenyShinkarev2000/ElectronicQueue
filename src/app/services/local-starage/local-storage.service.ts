@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { IUserAuthData, UserRoleType } from "./user-auth-data.interface";
+import { IUserAuthData } from "../authentication/user-auth-data.interface";
+import { UserRole } from "../permission/all-users-role.enum";
 
 @Injectable({
     providedIn: 'root'
 })
-export class LocalStorageManagerService {
+export class LocalStorageService {
 
     public static tokenGetter(): string {
         return localStorage.getItem("token");
@@ -14,7 +15,7 @@ export class LocalStorageManagerService {
     }
 
     public saveUserAuthData(data: IUserAuthData): void {
-        Object.keys(data).forEach((key) => {
+        Object.keys(data).forEach((key: string) => {
             // как задать тип key при вызове?
             if (!data?.[key as keyof IUserAuthData]) {
                 throw new Error("Попытка сохранить в локальное хранилище пустое значение с ключом " + key);
@@ -27,7 +28,7 @@ export class LocalStorageManagerService {
         try {
             return {
                 id: this.loadItem("id"),
-                role: <UserRoleType>this.loadItem("role"),
+                role: <UserRole>this.loadItem("role"),
                 token: this.loadItem("token")
             };
         } catch {
@@ -40,7 +41,7 @@ export class LocalStorageManagerService {
     }
 
     private loadItem(key: string): string {
-        if (!key.trim()) {
+        if (!key?.trim()) {
             throw new Error("Попытка получить значение из локального хранилища по пустому ключу");
         }
 
@@ -48,7 +49,7 @@ export class LocalStorageManagerService {
     }
 
     private setItem(key: string, value: string): void {
-        if (!key.trim()) {
+        if (!key?.trim()) {
             throw new Error("Попытка сохранить в локальное хранилище значение с пустым ключом");
         }
         if (!value.trim()) {
@@ -59,7 +60,7 @@ export class LocalStorageManagerService {
     }
 
     private removeItem(key: string): void {
-        if (!key.trim()) {
+        if (!key?.trim()) {
             throw new Error("Попытка удалить из локального хранилища значение по пустому ключу");
         }
 

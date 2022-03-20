@@ -1,4 +1,4 @@
-export type UserRole = "admin" | "operator" | "client";
+import { UserRole } from "../permission/all-users-role.enum";
 
 export interface IUserAuthData {
     token: string,

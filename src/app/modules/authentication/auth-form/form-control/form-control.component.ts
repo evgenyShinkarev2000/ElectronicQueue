@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from "@angular/forms";
-import { FormControlExtension } from "../../view-models/form-validation/form-control-extemsion";
+import { FormControlExtension } from "../../../../view-models/form-validation/form-control-extemsion";
 
 @Component({
     selector: 'app-form-control',

@@ -1,17 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthenticationPassedMockComponent } from "./authentication-passed-mock/authentication-passed-mock.component";
-import { AuthService } from "./services/auth.service";
-import { AuthFormPageComponent } from "./auth-form/auth-form.page.component";
-import { ErrorPageComponent } from "./error/error.page.component";
-import { MainWindowComponent } from "./main-window/main-window.page.component";
+import { AuthService } from "./services/authentication/auth.service";
 
 const routes: Routes = [
-    { path: "", outlet: "app-page",  redirectTo: "main_window", pathMatch: "full" },
-    { path: "main_window", outlet: "app-page", component: MainWindowComponent, canActivate: [AuthService] },
-    { path: "login", outlet: "app-page", component: AuthFormPageComponent },
-    { path: "signup", outlet: "app-page", component: AuthFormPageComponent },
-    { path: "error_page", outlet: "app-page", component: ErrorPageComponent }
+    { path: "", redirectTo: "main_window", pathMatch: "full" },
+    {
+        path: "auth",
+        // eslint-disable-next-line @typescript-eslint/typedef
+        loadChildren: () => import("./modules/authentication/authentication.module").then(m => m.AuthenticationModule)
+    },
+    {
+        path: "main_window",
+        // eslint-disable-next-line @typescript-eslint/typedef
+        loadChildren: () => import("./modules/main-window/main-window.module").then(m => m.MainWindowModule),
+        canActivate: [AuthService]
+    },
 ];
 
 @NgModule({

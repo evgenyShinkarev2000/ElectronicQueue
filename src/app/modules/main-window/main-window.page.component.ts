@@ -1,26 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from "../../services/auth.service";
+import { Component } from '@angular/core';
+import { AuthService } from "../../services/authentication/auth.service";
 import { Router } from "@angular/router";
 import { ILink } from 'src/app/models/link.interface';
+import { UserRole } from "../../services/permission/all-users-role.enum";
+import { PermissionType } from "../../services/permission/all-permissions.enum";
 
 @Component({
     selector: 'app-main-window',
     templateUrl: './main-window.page.component.html',
     styleUrls: ['./main-window.page.component.scss']
 })
-export class MainWindowComponent implements OnInit {
+export class MainWindowComponent  {
 
     public readonly links: ILink[] = [
-        { text: "Учетные записи", routerLink: "accounts", ngxOnly: ["admin"] },
-        { text: "Очереди", routerLink: "queues" },
-        { text: "Конкретная очередь", routerLink: "queue" },
-        { text: "Личный кабинет", routerLink: "personal_account", ngxOnly: ["admin", "client"] }
+        { text: "Учетные записи", routerLink: "accounts", ngxOnly: [UserRole.ADMIN] },
+        { text: "Очереди", routerLink: "queues", ngxOnly: [PermissionType.canAuthorizedWatch] },
+        { text: "Конкретная очередь", routerLink: "queue", ngxOnly: [PermissionType.canAuthorizedWatch] },
+        { text: "Личный кабинет", routerLink: "personal_account", ngxOnly: [UserRole.ADMIN, UserRole.CLIENT] }
     ];
 
     constructor(private _authService: AuthService, private _router: Router) {
-    }
-
-    ngOnInit(): void {
     }
 
     public logOut(): void {

@@ -1,9 +1,9 @@
-import { AfterContentInit, Component, OnDestroy } from '@angular/core';
+import { AfterContentInit, Component } from '@angular/core';
 import { FormGroup } from "@angular/forms";
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
-import { AppFormValidationService } from "../view-models/form-validation/form-validation-model";
-import { FormControlExtension } from "../view-models/form-validation/form-control-extemsion";
+import { AppFormValidationService } from "../../../view-models/form-validation/form-validation-model";
+import { FormControlExtension } from "../../../view-models/form-validation/form-control-extemsion";
 
 export enum FormStates {
     logIn,
@@ -16,10 +16,7 @@ export enum FormStates {
     styleUrls: ['./auth-form.component.scss'],
     providers: [AppFormValidationService]
 })
-export class AuthFormPageComponent implements AfterContentInit, OnDestroy {
-    ngOnDestroy(): void {
-        console.log("компонет уничтожен");
-    }
+export class AuthFormPageComponent implements AfterContentInit {
     public formState: FormStates = FormStates.logIn;
     public authFormControlExtensions: FormControlExtension[];
     public readonly authForm: FormGroup;
@@ -48,7 +45,7 @@ export class AuthFormPageComponent implements AfterContentInit, OnDestroy {
             "login": FormStates.logIn,
             "signup": FormStates.signUp
         };
-        const url: string = this._router.url.slice(1);
+        const url: string = this._router.url.slice(1).split("/").pop();
         if (url in selector && this.formState !== selector[url]) {
             this.onChangeModeClick();
         }
@@ -67,13 +64,12 @@ export class AuthFormPageComponent implements AfterContentInit, OnDestroy {
                 this.authFormControlExtensions = this._loginFormControlExtensions.slice();
                 //Если использовать router вместо location, то сбрасываются значения полей формы и вызывается
                 //метод onDestroy
-                this._location.go("login");
-                this._router.createUrlTree(["login"]);
+                this._location.go("auth/login");
             },
             [FormStates.signUp]: () => {
                 this.addControls(this._signupFormControlExtensions);
                 this.authFormControlExtensions.push(...this._signupFormControlExtensions);
-                this._location.go("signup");
+                this._location.go("auth/signup");
                 // this._router.createUrlTree(["signup"]);
             }
         };

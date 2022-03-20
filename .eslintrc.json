@@ -193,6 +193,7 @@
             "variableDeclarationIgnoreFunction": true
           }
         ],
+
         "@typescript-eslint/explicit-function-return-type": "error",
         "@angular-eslint/no-conflicting-lifecycle": "error",
         "@angular-eslint/no-host-metadata-property": "error",
