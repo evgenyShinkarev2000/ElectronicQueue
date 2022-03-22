@@ -1,2 +1,16 @@
-<p>accounts works!</p>
-<button class="btn btn-primary" type="button" (click)="loadUsers()">Загрузить пользователей</button>
+<div class="accounts">
+  <div class="sort-settings">
+    <select [(ngModel)]="sortState">
+      <option *ngFor="let sortOption of sortOptions" [value]="sortOption">{{sortOptionsName[sortOption]}}</option>
+    </select>
+    <div class="role-filter-block">
+      <label *ngFor="let roleFilterOption of roleFilterOptions">
+        <input type="checkbox"
+               (change)="changeFilterMode(roleFilterOption)"
+               [checked]="roleFilterModel[roleFilterOption]">
+        <span>{{roleFilterModel[roleFilterOption].name}}</span>
+      </label>
+    </div>
+  </div>
+  <button class="btn btn-primary" type="button" (click)="loadUsers()">Загрузить пользователей</button>
+</div>

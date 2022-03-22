@@ -3,9 +3,9 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { catchError, map, Observable, of } from "rxjs";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { CanActivate, Router } from "@angular/router";
-import { ILoginData } from "./login-data.interface";
-import { IUserAuthData } from "./user-auth-data.interface";
-import { ISignupData } from "./signup-data.interface";
+import { IUserLoginData } from "../../models/user-login-data.interface";
+import { IUserAuthData } from "../../models/user-auth-data.interface";
+import { IUserSignupData } from "../../models/user-signup-data.interface";
 import { LocalStorageService } from "../local-starage/local-storage.service";
 import { MyPermissionService } from "../permission/my-permission.service";
 import { UserRole } from "../permission/all-users-role.enum";
@@ -44,7 +44,7 @@ export class AuthService implements CanActivate {
         }
     }
 
-    public logIn(authData: ILoginData): Observable<boolean> {
+    public logIn(authData: IUserLoginData): Observable<boolean> {
         return this._httpClient.post<IUserAuthData>
         ("https://localhost:44315/api/auth/login", authData).pipe(
             catchError((responseError: HttpErrorResponse) => {
@@ -86,7 +86,7 @@ export class AuthService implements CanActivate {
     //     }
     // }
 
-    public async signUp(signUpData: ISignupData): Promise<void> {
+    public async signUp(signUpData: IUserSignupData): Promise<void> {
         this._httpClient.post("https://localhost:44315/api/auth/signup", signUpData)
             .subscribe({
                 error: (err: HttpErrorResponse) => {

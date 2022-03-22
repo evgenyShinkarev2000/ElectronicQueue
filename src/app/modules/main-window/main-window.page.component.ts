@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from "../../services/authentication/auth.service";
 import { Router } from "@angular/router";
-import { ILink } from 'src/app/models/link.interface';
+import { ILink } from 'src/app/models/ngx-protected-link.interface';
 import { UserRole } from "../../services/permission/all-users-role.enum";
 import { PermissionType } from "../../services/permission/all-permissions.enum";
 

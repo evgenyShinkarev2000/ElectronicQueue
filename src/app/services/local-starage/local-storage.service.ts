@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IUserAuthData } from "../authentication/user-auth-data.interface";
+import { IUserAuthData } from "../../models/user-auth-data.interface";
 import { UserRole } from "../permission/all-users-role.enum";
 
 @Injectable({

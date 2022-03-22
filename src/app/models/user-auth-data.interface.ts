@@ -1,4 +1,4 @@
-import { UserRole } from "../permission/all-users-role.enum";
+import { UserRole } from "../services/permission/all-users-role.enum";
 
 export interface IUserAuthData {
     token: string,

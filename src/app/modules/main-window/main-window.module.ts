@@ -6,7 +6,8 @@ import { MainWindowComponent } from "./main-window.page.component";
 import { AccountsComponent } from "./accounts/accounts.component";
 import { QueuesComponent } from './queues/queues.component';
 import { PersonalAccountComponent } from './personal-account/personal-account.component';
-import { NgxPermissionsModule, NgxPermissionsRestrictStubModule } from "ngx-permissions";
+import { NgxPermissionsModule } from "ngx-permissions";
+import { FormsModule } from "@angular/forms";
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { NgxPermissionsModule, NgxPermissionsRestrictStubModule } from "ngx-perm
     imports: [
         CommonModule,
         MainWindowRoutingModule,
-        NgxPermissionsModule.forChild()
+        NgxPermissionsModule.forChild(),
+        FormsModule
     ]
 })
 export class MainWindowModule {

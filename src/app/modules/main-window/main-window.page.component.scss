@@ -1,19 +1,33 @@
-header{
-  nav{
-    div.navbar-left-block{
+header {
+  nav {
+    div.navbar-left-block {
       font-size: 1.5em;
     }
-    ul.navbar-right-block{
-      li{
+
+    ul.navbar-right-block {
+      li {
         height: fit-content;
         margin-left: 2rem;
-        a{
+
+        a {
           text-decoration: none;
-          &.active{
+
+          &.active {
             text-decoration: underline;
           }
         }
       }
+    }
+  }
+}
+
+main {
+  section {
+      &.child-w-100{
+        width: 100%;
+        + *{
+          width: 100%;
+        }
     }
   }
 }
