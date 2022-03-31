@@ -1,8 +1,9 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { IUser } from "../../../models/user-model.interface";
-import { interval, map } from "rxjs";
+import { interval, map, Subscription, tap } from "rxjs";
 import { UserRole } from "../../../services/permission/all-users-role.enum";
+import { WebSocketService } from "../../../services/web-socket/web-socket.service";
 
 
 // eslint-disable-next-line @typescript-eslint/typedef
@@ -15,7 +16,7 @@ type SortOption = typeof sortOptions[number];
     templateUrl: './accounts.component.html',
     styleUrls: ['./accounts.component.scss'],
 })
-export class AccountsComponent implements OnInit {
+export class AccountsComponent implements OnInit, OnDestroy {
 
     public users: IUser[] = [];
     public readonly sortOptions: typeof sortOptions = sortOptions;
@@ -32,15 +33,29 @@ export class AccountsComponent implements OnInit {
         [UserRole.OPERATOR]: { name: "Операторы", selected: true },
         [UserRole.CLIENT]: { name: "Клиенты", selected: true }
     };
-
-    constructor(private _httpClient: HttpClient) {
+    private _subscription: Subscription;
+    constructor(private _webSocketService: WebSocketService) {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
+        this._webSocketService.connect();
+        this._subscription = this._webSocketService.getUserStream$().subscribe({
+            next: (user: IUser) => this.users.push(user),
+            error: (e: Error) => console.log(e),
+            complete: () => console.log("соеденение разорвано")
+        });
     }
 
-    public loadUsers(): void {
-        this._httpClient.get("https://localhost:44315/api/MockUsers").subscribe();
+    public ngOnDestroy(): void{
+        this._subscription.unsubscribe();
+    }
+
+    // public loadUsers(): void {
+    //     this._httpClient.get("https://localhost:44315/api/MockUsers").subscribe();
+    // }
+
+    public loadUsers(): void{
+        this._webSocketService.sendUserInStream(1);
     }
 
     public changeFilterMode(userRole: UserRole): void{

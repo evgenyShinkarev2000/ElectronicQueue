@@ -10,7 +10,4 @@ export class ServerApiService {
     constructor(private _httpClient: HttpClient ) {
     }
 
-    // public getUsersLazy(): IUser{
-    //
-    // }
 }

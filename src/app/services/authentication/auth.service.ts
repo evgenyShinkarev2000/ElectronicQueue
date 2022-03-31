@@ -28,19 +28,10 @@ export class AuthService implements CanActivate {
                 private _permissionService: MyPermissionService,
                 private _localStorageManager: LocalStorageService,
     ) {
-
-        // //ngxRoleService не работает
-        // const t = this.getRolesWithPermissions();
-        // debugger;
-        // _ngxRoleService.addRoles(t);
-        // const permission: string = _localStorageManager.loadUserAuthData()?.role;
-        // if (permission) {
-        //     _ngxPermissionsService.loadPermissions([permission]);
-        // }
         if (this.isUserAuthenticated()) {
-            _router.navigate(["main_window"]);
             this._permissionService
                 .loadPermission(this._localStorageManager.loadUserAuthData().role as unknown as UserRole);
+            _router.navigate(["main_window"]);
         }
     }
 

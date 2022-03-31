@@ -13,4 +13,7 @@
     </div>
   </div>
   <button class="btn btn-primary" type="button" (click)="loadUsers()">Загрузить пользователей</button>
+  <div *ngFor="let user of users">
+    {{user | json}}
+  </div>
 </div>
