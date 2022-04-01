@@ -1,0 +1,26 @@
+<div class="border account-item">
+  <div class="left-block">
+    <button class="btn btn-default" (click)="changeExtendMode()">
+      <span class="glyphicon" [class.down]="!isExtended" [class.up]="isExtended"></span>
+    </button>
+    <div class="all-info">
+      <div class="info main-info">
+        <span>{{user.secondName}} </span>
+        <span>{{user.firstName}} </span>
+        <span>{{user.role}}</span>
+      </div>
+      <div class="info additional-info" *ngIf="isExtended">
+        <div><span class="description">Id</span><span>{{user.id}}</span></div>
+        <div><span class="description">Логин</span><span>{{user.login}}</span></div>
+        <div><span class="description">Пароль</span><span>{{user.password}}</span></div>
+        <div><span class="description">Информация</span> {{user.info}} </div>
+        <div><span class="description">Разрешения </span>{{user.permissions}} </div>
+      </div>
+    </div>
+  </div>
+  <div class="control-buttons">
+    <button class="btn approve-btn"></button>
+    <button class="btn edit-btn"></button>
+    <button class="btn cancel-btn"></button>
+  </div>
+</div>

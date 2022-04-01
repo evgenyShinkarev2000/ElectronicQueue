@@ -1,0 +1,84 @@
+.account-item {
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+
+  .left-block {
+    display: flex;
+
+    .info {
+      display: inline-block;
+    }
+
+    button {
+      .down::before {
+        content: "";
+        background-image: url("/assets/img/arrow-icon.png");
+        background-size: contain;
+        width: 1.2rem;
+        height: 1.2rem;
+        display: inline-block;
+        transform: rotate(90deg);
+      }
+
+      .up::before {
+        @extend .down;
+        transform: rotate(-90deg);
+      }
+    }
+
+    .all-info {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      .main-info {
+        display: flex;
+        span {
+          min-width: 10rem;
+          margin-right: 2rem;
+        }
+      }
+
+      .additional-info {
+        display: flex;
+        flex-direction: column;
+        .description{
+          display: inline-block;
+          min-width: 10rem;
+          margin-right: 2rem;
+        }
+      }
+    }
+  }
+
+  .control-buttons {
+    display: flex;
+    flex-flow: wrap;
+    align-items: center;
+
+    .control-button {
+      background-repeat: no-repeat;
+      margin-right: 1rem;
+      background-size: contain;
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .approve-btn {
+      @extend .control-button;
+      background-image: url("/assets/img/approve.png");
+    }
+
+    .edit-btn {
+      @extend .control-button;
+      background-image: url("/assets/img/edit.png");
+    }
+
+    .cancel-btn {
+      @extend .control-button;
+      background-image: url("/assets/img/cancel.png");
+    }
+  }
+}
+
+

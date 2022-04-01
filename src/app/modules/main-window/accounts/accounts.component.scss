@@ -3,10 +3,24 @@
   .sort-settings{
     width: 100%;
     display: flex;
-    line-height: 5rem;
+    height: 5rem;
     align-items: flex-start;
+    justify-content: flex-start;
+    select{
+    }
+    .role-filter-block{
+      display: flex;
+      margin-left: 2rem;
+      flex-basis: 35%;
+      justify-content: space-around;
+      label{
+        display: flex;
+        margin-right: 1rem;
+        input{
+          margin-right: 0.5rem;
+        }
+      }
+    }
   }
-  .user-item{
 
-  }
 }

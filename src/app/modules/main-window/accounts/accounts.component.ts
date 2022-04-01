@@ -4,6 +4,7 @@ import { IUser } from "../../../models/user-model.interface";
 import { interval, map, Subscription, tap } from "rxjs";
 import { UserRole } from "../../../services/permission/all-users-role.enum";
 import { WebSocketService } from "../../../services/web-socket/web-socket.service";
+import { IUserLocked } from "../../../models/user-model-locked.interface";
 
 
 // eslint-disable-next-line @typescript-eslint/typedef
@@ -18,7 +19,7 @@ type SortOption = typeof sortOptions[number];
 })
 export class AccountsComponent implements OnInit, OnDestroy {
 
-    public users: IUser[] = [];
+    public viewUsers: IUserLocked[] = [];
     public readonly sortOptions: typeof sortOptions = sortOptions;
     public readonly sortOptionsName: { [key in SortOption]: string } = {
         firstName: "Имя по возрастанию",
@@ -34,32 +35,64 @@ export class AccountsComponent implements OnInit, OnDestroy {
         [UserRole.CLIENT]: { name: "Клиенты", selected: true }
     };
     private _subscription: Subscription;
+    private _allUsers: IUserLocked[] = [];
+
     constructor(private _webSocketService: WebSocketService) {
     }
 
     public ngOnInit(): void {
-        this._webSocketService.connect();
-        this._subscription = this._webSocketService.getUserStream$().subscribe({
-            next: (user: IUser) => this.users.push(user),
+        this._webSocketService.connectUsers();
+        this._subscription = this._webSocketService.getAllUsersStream$().subscribe({
+            next: (users: IUserLocked[]) => {
+                this._allUsers = this._allUsers.concat(users);
+                this.applyFilterAndSort();
+            },
             error: (e: Error) => console.log(e),
             complete: () => console.log("соеденение разорвано")
         });
     }
 
-    public ngOnDestroy(): void{
+    public ngOnDestroy(): void {
         this._subscription.unsubscribe();
     }
 
-    // public loadUsers(): void {
-    //     this._httpClient.get("https://localhost:44315/api/MockUsers").subscribe();
-    // }
-
-    public loadUsers(): void{
-        this._webSocketService.sendUserInStream(1);
+    public loadUsers(): void {
+        this._webSocketService.pingWebSocketAllUsers();
     }
 
-    public changeFilterMode(userRole: UserRole): void{
-        this.roleFilterModel[userRole].selected = ! this.roleFilterModel[userRole].selected;
-        console.log(this.roleFilterModel);
+    public changeFilterMode(userRole: UserRole): void {
+        this.roleFilterModel[userRole].selected = !this.roleFilterModel[userRole].selected;
+        this.applyFilter();
     }
+
+    public applyFilterAndSort(): void {
+        this.applyFilter();
+        this.applySort();
+    }
+
+    public applyFilter(): void {
+        this.viewUsers = this._allUsers.filter((user:IUserLocked) => {
+            const userRole: string = user.role.toUpperCase();
+            if (!(userRole in UserRole)) {
+                console.log("неизвестная роль");
+
+                return false;
+            }
+
+            return this.roleFilterModel[userRole as unknown as keyof typeof UserRole].selected;
+        });
+    }
+
+    public applySort(): void {
+        console.log("sorted");
+        const selector: { [key in SortOption]: (a: IUserLocked, b: IUserLocked) => number } = {
+            firstName: (a: IUserLocked, b: IUserLocked) => a.firstName.localeCompare(b.firstName),
+            secondName: (a: IUserLocked, b: IUserLocked) => a.secondName.localeCompare(b.secondName),
+            firstNameDesc: (a: IUserLocked, b: IUserLocked) => -a.firstName.localeCompare(b.firstName),
+            secondNameDesc: (a: IUserLocked, b: IUserLocked) => -a.secondName.localeCompare(b.secondName)
+        };
+        this.viewUsers.sort(selector[this.sortState]);
+    }
+
+
 }

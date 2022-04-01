@@ -8,6 +8,7 @@ import { QueuesComponent } from './queues/queues.component';
 import { PersonalAccountComponent } from './personal-account/personal-account.component';
 import { NgxPermissionsModule } from "ngx-permissions";
 import { FormsModule } from "@angular/forms";
+import { AccountItemComponent } from './accounts/account-item/account-item.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { FormsModule } from "@angular/forms";
         MainWindowComponent,
         AccountsComponent,
         QueuesComponent,
-        PersonalAccountComponent
+        PersonalAccountComponent,
+        AccountItemComponent
     ],
     imports: [
         CommonModule,
