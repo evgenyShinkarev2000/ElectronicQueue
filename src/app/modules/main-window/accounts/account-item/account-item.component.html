@@ -1,4 +1,4 @@
-<div class="border account-item">
+<div class="border account-item" [class.locked]="isLocked" [class.edited]="canEdit">
   <div class="left-block">
     <button class="btn btn-default" (click)="changeExtendMode()">
       <span class="glyphicon" [class.down]="!isExtended" [class.up]="isExtended"></span>
@@ -20,7 +20,7 @@
   </div>
   <div class="control-buttons">
     <button class="btn approve-btn"></button>
-    <button class="btn edit-btn"></button>
+    <button class="btn edit-btn" (click)="changeEditMode()"></button>
     <button class="btn cancel-btn"></button>
   </div>
 </div>

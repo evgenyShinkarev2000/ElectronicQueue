@@ -41,14 +41,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this._webSocketService.connectUsers();
-        this._subscription = this._webSocketService.getAllUsersStream$().subscribe({
-            next: (users: IUserLocked[]) => {
-                this._allUsers = this._allUsers.concat(users);
-                this.applyFilterAndSort();
-            },
-            error: (e: Error) => console.log(e),
-            complete: () => console.log("соеденение разорвано")
+        this._subscription = this._webSocketService.allUsers$.subscribe((users: IUserLocked[]) => {
+            this._allUsers = this._allUsers.concat(users);
+            this.applyFilterAndSort();
         });
     }
 
@@ -57,7 +52,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
 
     public loadUsers(): void {
-        this._webSocketService.pingWebSocketAllUsers();
+        this._webSocketService.loadAllUsers();
     }
 
     public changeFilterMode(userRole: UserRole): void {

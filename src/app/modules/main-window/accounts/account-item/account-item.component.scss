@@ -2,6 +2,12 @@
   display: flex;
   justify-content: space-between;
   box-sizing: border-box;
+  &.edited{
+    background-color: lightgreen;
+  }
+  &.locked{
+    background-color: lightyellow;
+  }
 
   .left-block {
     display: flex;

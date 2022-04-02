@@ -3,7 +3,7 @@ import { FormGroup } from "@angular/forms";
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
 import { AppFormValidationService } from "../../../view-models/form-validation/form-validation-model";
-import { FormControlExtension } from "../../../view-models/form-validation/form-control-extemsion";
+import { FormControlExtension } from "../../../view-models/form-validation/form-control-extension";
 
 export enum FormStates {
     logIn,

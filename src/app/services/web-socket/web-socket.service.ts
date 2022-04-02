@@ -1,97 +1,97 @@
 import { Injectable } from '@angular/core';
-import { map, Observable, skip, Subscriber } from "rxjs";
-import { IUser } from "../../models/user-model.interface";
-import { IUpdatedWebsocketItem } from "../../models/updated-websocket-item.interface";
+import { Observable, Subject } from "rxjs";
+import { IWebSocketLock } from "../../models/websocket-lock-item.interface";
 import { IUserLocked } from 'src/app/models/user-model-locked.interface';
+import { IWebSocketMessage, WebSocketInstruction } from "./web-socket-message.interaface";
 
 @Injectable({
     providedIn: 'root'
 })
 export class WebSocketService {
-    private _webSocketAllUsers: WebSocket;
-    private _allUsers$: Observable<IUserLocked[]>;
-    private _webSocketUserUpdate: WebSocket;
-    private _userUpdate$: Observable<IUser>;
-    private _webSocketStatusUpdate: WebSocket;
-    private _statusUpdate$: Observable<IUpdatedWebsocketItem>;
-
-    constructor() {
+    public get allUsers$(): Observable<IUserLocked[]> {
+        return this._allUsers$;
     }
 
-    public connectStatusUpdate(): void {
+    public get addUser$(): Observable<IUserLocked> {
+        return this._addUser$;
+    }
+
+    public get updateUser$(): Observable<IUserLocked> {
+        return this._updateUser$;
+    }
+
+    public get removeUser(): Observable<IUserLocked> {
+        return this._removeUser$;
+    }
+
+    public get changeLock$(): Observable<IWebSocketLock> {
+        return this._changeLock$;
+    }
+
+    public get editRight$(): Observable<IWebSocketLock> {
+        return this._editRight$;
+    }
+
+
+    private _webSocket: WebSocket;
+
+    private _allUsers$: Subject<IUserLocked[]>;
+    private _addUser$: Subject<IUserLocked>;
+    private _updateUser$: Subject<IUserLocked>;
+    private _removeUser$: Subject<IUserLocked>;
+    private _changeLock$: Subject<IWebSocketLock>;
+    private _editRight$: Subject<IWebSocketLock>;
+
+    constructor() {
+        this.connect();
+        this.initStreams();
+    }
+
+    public connect(): void {
         try {
-            this._webSocketStatusUpdate = new WebSocket("wss://localhost:44315/WebSocket/status_update");
+            // console.log("попытка установить соеденение с websocket");
+            this._webSocket = new WebSocket("wss://localhost:44315/ws/WebSocketUser");
+            // console.log("соединение установленно");
         } catch (e) {
             console.log("Не удалось установить соединение с websocket status_update");
             console.log(e);
         }
     }
 
-    public getStatusUpdateStream$(): Observable<IUpdatedWebsocketItem> {
-        if (!this._statusUpdate$) {
-            this._statusUpdate$ = new Observable<any>((subscriber: Subscriber<any>) => {
-                this._webSocketStatusUpdate.onmessage = (e: MessageEvent): void => {
-                    subscriber.next(e.data);
-                };
-            }).pipe(
-                map((statusUpdate: string) => JSON.parse(statusUpdate))
-            );
-        }
+    public initStreams(): void {
+        this._allUsers$ = new Subject<IUserLocked[]>();
+        this._changeLock$ = new Subject<IWebSocketLock>();
+        this._addUser$ = new Subject<IUserLocked>();
+        this._updateUser$ = new Subject<IUserLocked>();
+        this._removeUser$ = new Subject<IUserLocked>();
+        this._editRight$ = new Subject<IWebSocketLock>();
 
-        return this._statusUpdate$;
+        const selector: { [key in WebSocketInstruction]: Function } = {
+            allUsers: (allUsers: IUserLocked[]) => this._allUsers$.next(allUsers),
+            addUser: (user: IUserLocked) => this._addUser$.next(user),
+            updateUser: (user: IUserLocked) => this._updateUser$.next(user),
+            changeLock: (idLock: IWebSocketLock) => this._changeLock$.next(idLock),
+            removeUser: (user: IUserLocked) => this._removeUser$.next(user),
+            editRight: (idLock: IWebSocketLock) => this._editRight$.next(idLock)
+        };
+
+        this._webSocket.onmessage = (messageEvent: MessageEvent): void => {
+            const webSocketMessage: IWebSocketMessage = JSON.parse(messageEvent.data);
+            selector[webSocketMessage.instruction](webSocketMessage.data);
+        };
     }
 
-    public connectUserUpdate(): void {
-        try {
-            this._webSocketUserUpdate = new WebSocket("wss://localhost:44315/WebSocket/user_update");
-        } catch (e) {
-            console.log("Не удалось установить соединение с websocket user_update");
-            console.log(e);
-        }
+    public loadAllUsers(): void {
+        this._webSocket.send(JSON.stringify({
+            "instruction": "allUsers"
+        }));
     }
 
-    public getUserUpdateStream$(): Observable<IUser> {
-        if (!this._userUpdate$) {
-            this._userUpdate$ = new Observable<any>((subscriber: Subscriber<any>) => {
-                this._webSocketUserUpdate.onmessage = (e: MessageEvent): void => {
-                    subscriber.next(e.data);
-                };
-            }).pipe(
-                map((user: string) => JSON.parse(user))
-            );
-        }
-
-        return this._userUpdate$;
-    }
-
-    public connectUsers(): void {
-        try {
-            this._webSocketAllUsers = new WebSocket("wss://localhost:44315/WebSocket/users");
-        } catch (e) {
-            console.log("Не удалось установить соединение с websocket");
-            console.log(e);
-        }
-    }
-
-    public getAllUsersStream$(): Observable<IUserLocked[]> {
-        if (!this._allUsers$) {
-            this._allUsers$ = new Observable<any>((subscriber: Subscriber<any>) => {
-                this._webSocketAllUsers.onmessage = (e: MessageEvent): void => {
-                    subscriber.next(e.data);
-                };
-            }).pipe(
-                skip(1),
-                map((users: string) => {
-                    const result: IUserLocked[] = JSON.parse(users);
-                    return result;
-                })
-            );
-        }
-
-        return this._allUsers$;
-    }
-
-    public pingWebSocketAllUsers(): void{
-        this._webSocketAllUsers.send("ping");
+    public changeEditRight(item: IWebSocketLock): void {
+        const request: IWebSocketMessage = {
+            instruction: "editRight",
+            data: item
+        };
+        this._webSocket.send(JSON.stringify(request));
     }
 }
