@@ -1,10 +1,8 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { IUser } from "../../../models/user-model.interface";
-import { interval, map, Subscription, tap } from "rxjs";
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserRole } from "../../../services/permission/all-users-role.enum";
 import { WebSocketService } from "../../../services/web-socket/web-socket.service";
 import { IUserLocked } from "../../../models/user-model-locked.interface";
+import { WSUserController } from "../../../services/web-socket/controllers/web-socket-user-controller.service";
 
 
 // eslint-disable-next-line @typescript-eslint/typedef
@@ -34,25 +32,22 @@ export class AccountsComponent implements OnInit, OnDestroy {
         [UserRole.OPERATOR]: { name: "Операторы", selected: true },
         [UserRole.CLIENT]: { name: "Клиенты", selected: true }
     };
-    private _subscription: Subscription;
     private _allUsers: IUserLocked[] = [];
 
-    constructor(private _webSocketService: WebSocketService) {
+    constructor(private _wsUserController: WSUserController) {
     }
 
     public ngOnInit(): void {
-        this._subscription = this._webSocketService.allUsers$.subscribe((users: IUserLocked[]) => {
-            this._allUsers = this._allUsers.concat(users);
-            this.applyFilterAndSort();
-        });
     }
 
     public ngOnDestroy(): void {
-        this._subscription.unsubscribe();
     }
 
     public loadUsers(): void {
-        this._webSocketService.loadAllUsers();
+        this._wsUserController.getAllUser().subscribe((users: IUserLocked[]) => {
+            this._allUsers = this._allUsers.concat(users);
+            this.applyFilterAndSort();
+        });
     }
 
     public changeFilterMode(userRole: UserRole): void {
@@ -66,7 +61,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
 
     public applyFilter(): void {
-        this.viewUsers = this._allUsers.filter((user:IUserLocked) => {
+        this.viewUsers = this._allUsers.filter((user: IUserLocked) => {
             const userRole: string = user.role.toUpperCase();
             if (!(userRole in UserRole)) {
                 console.log("неизвестная роль");

@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IUserLocked } from "../../../../models/user-model-locked.interface";
 import { WebSocketService } from "../../../../services/web-socket/web-socket.service";
-import { IWebSocketLock } from "../../../../models/websocket-lock-item.interface";
+import { IItemLock } from "../../../../models/websocket-lock-item.interface";
 import { AuthService } from "../../../../services/authentication/auth.service";
 import { Subscription } from "rxjs";
+import { WSUserController } from "../../../../services/web-socket/controllers/web-socket-user-controller.service";
 
 @Component({
     selector: 'app-account-item',
@@ -20,7 +21,7 @@ export class AccountItemComponent implements OnInit {
     public canEdit: boolean = false;
     private _editRightSubscription: Subscription;
 
-    constructor(private _webSocketService: WebSocketService, private authService: AuthService) {
+    constructor(private _wsUserController: WSUserController, private _authService: AuthService) {
     }
 
     ngOnInit(): void {
@@ -31,30 +32,21 @@ export class AccountItemComponent implements OnInit {
     }
 
     public changeEditMode(): void {
-        // если isEdit, то кнопка недоступна
-        if (this.canEdit){
+        if (this.canEdit === true) {
             this.canEdit = false;
-            this._webSocketService.changeEditRight({
+            this._wsUserController.deleteEditRight({
                 itemId: this.user.id,
-                userId: this.authService.userAuthData.id,
-                status: "Lock"
+                status: null,
+                userId: null
             });
-
-            return;
+        } else {
+            this._wsUserController.tryGetEditRight({
+                itemId: this.user.id,
+                userId: null,
+                status: null
+            }).subscribe((response:boolean) => {
+                this.canEdit = response;
+            });
         }
-        this._editRightSubscription = this._webSocketService.editRight$.subscribe((idLock: IWebSocketLock) => {
-            if (idLock.status === "Lock"){
-                alert("Запись уже редактируется");
-            } else if (idLock.status === "Free"){
-                this.canEdit = true;
-            }
-            this._editRightSubscription.unsubscribe();
-        });
-        this._webSocketService.changeEditRight({
-            itemId: this.user.id,
-            userId: this.authService.userAuthData.id,
-            status: this.canEdit ? "Lock" : "Lock"
-        });
     }
-
 }

@@ -1,97 +1,71 @@
 import { Injectable } from '@angular/core';
+import { IWSMessageToServer } from "./web-socket-message-to-server.interaface";
 import { Observable, Subject } from "rxjs";
-import { IWebSocketLock } from "../../models/websocket-lock-item.interface";
-import { IUserLocked } from 'src/app/models/user-model-locked.interface';
-import { IWebSocketMessage, WebSocketInstruction } from "./web-socket-message.interaface";
 
 @Injectable({
     providedIn: 'root'
 })
 export class WebSocketService {
-    public get allUsers$(): Observable<IUserLocked[]> {
-        return this._allUsers$;
+    public get listenMessage$(): Observable<string>{
+        return this._message$.asObservable();
     }
-
-    public get addUser$(): Observable<IUserLocked> {
-        return this._addUser$;
-    }
-
-    public get updateUser$(): Observable<IUserLocked> {
-        return this._updateUser$;
-    }
-
-    public get removeUser(): Observable<IUserLocked> {
-        return this._removeUser$;
-    }
-
-    public get changeLock$(): Observable<IWebSocketLock> {
-        return this._changeLock$;
-    }
-
-    public get editRight$(): Observable<IWebSocketLock> {
-        return this._editRight$;
-    }
-
-
+    private readonly _message$: Subject<string> = new Subject<string>();
     private _webSocket: WebSocket;
-
-    private _allUsers$: Subject<IUserLocked[]>;
-    private _addUser$: Subject<IUserLocked>;
-    private _updateUser$: Subject<IUserLocked>;
-    private _removeUser$: Subject<IUserLocked>;
-    private _changeLock$: Subject<IWebSocketLock>;
-    private _editRight$: Subject<IWebSocketLock>;
+    private readonly _reconnectLimit: number = 5;
+    private readonly _reconnectTime: number = 1000;
+    private _wasConnectionWithoutError: boolean = false;
+    private _reconnectCount: number = 0;
 
     constructor() {
         this.connect();
-        this.initStreams();
     }
 
-    public connect(): void {
-        try {
-            // console.log("попытка установить соеденение с websocket");
-            this._webSocket = new WebSocket("wss://localhost:44315/ws/WebSocketUser");
-            // console.log("соединение установленно");
-        } catch (e) {
-            console.log("Не удалось установить соединение с websocket status_update");
-            console.log(e);
+    public send(wsMessageToServer: IWSMessageToServer): void{
+        if (this._webSocket.readyState !== this._webSocket.OPEN){
+            throw new Error("попытка отправить сообщение на недостуный websocket");
+        }
+
+        if (!wsMessageToServer?.serverInstructions || wsMessageToServer.serverInstructions.length === 0){
+            throw new Error("попытка отправить сообщение серверу с пустой инструкцией");
+        }
+
+        const jsonString: string = JSON.stringify(wsMessageToServer);
+        this._webSocket.send(jsonString);
+    }
+
+    private connect(): void {
+        this._webSocket = new WebSocket("wss://localhost:44315/ws/WebSocketUser");
+        this._webSocket.onopen = (): void => this.open();
+        this._webSocket.onerror = (er:Event): void => {
+            this.reconnect();
+            console.log(er);
+        };
+
+        this._webSocket.onclose = (): void => this.close();
+    }
+
+    private reconnect(): void {
+        this._wasConnectionWithoutError = false;
+        if (this._reconnectCount >= this._reconnectLimit) {
+            console.log("не удалось подключиться к websocket");
+        } else {
+            this._reconnectCount++;
+            console.log("reconnect...");
+            setTimeout(() => this.connect(), this._reconnectTime);
         }
     }
 
-    public initStreams(): void {
-        this._allUsers$ = new Subject<IUserLocked[]>();
-        this._changeLock$ = new Subject<IWebSocketLock>();
-        this._addUser$ = new Subject<IUserLocked>();
-        this._updateUser$ = new Subject<IUserLocked>();
-        this._removeUser$ = new Subject<IUserLocked>();
-        this._editRight$ = new Subject<IWebSocketLock>();
-
-        const selector: { [key in WebSocketInstruction]: Function } = {
-            allUsers: (allUsers: IUserLocked[]) => this._allUsers$.next(allUsers),
-            addUser: (user: IUserLocked) => this._addUser$.next(user),
-            updateUser: (user: IUserLocked) => this._updateUser$.next(user),
-            changeLock: (idLock: IWebSocketLock) => this._changeLock$.next(idLock),
-            removeUser: (user: IUserLocked) => this._removeUser$.next(user),
-            editRight: (idLock: IWebSocketLock) => this._editRight$.next(idLock)
-        };
-
-        this._webSocket.onmessage = (messageEvent: MessageEvent): void => {
-            const webSocketMessage: IWebSocketMessage = JSON.parse(messageEvent.data);
-            selector[webSocketMessage.instruction](webSocketMessage.data);
-        };
+    private close(): void {
+        if (this._wasConnectionWithoutError) {
+            console.log("сервер закрыл websocket, ошибка не произошла");
+        }
     }
 
-    public loadAllUsers(): void {
-        this._webSocket.send(JSON.stringify({
-            "instruction": "allUsers"
-        }));
-    }
-
-    public changeEditRight(item: IWebSocketLock): void {
-        const request: IWebSocketMessage = {
-            instruction: "editRight",
-            data: item
-        };
-        this._webSocket.send(JSON.stringify(request));
+    private open(): void {
+        console.log("успешное подключение к websocket");
+        this._webSocket.onmessage = (message: MessageEvent): void =>
+            this._message$.next(message.data);
+        this._wasConnectionWithoutError = true;
+        this._reconnectCount = 0;
     }
 }
