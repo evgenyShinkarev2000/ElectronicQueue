@@ -3,6 +3,8 @@ import { UserRole } from "../../../services/permission/all-users-role.enum";
 import { WebSocketService } from "../../../services/web-socket/web-socket.service";
 import { IUserLocked } from "../../../models/user-model-locked.interface";
 import { WSUserController } from "../../../services/web-socket/controllers/web-socket-user-controller.service";
+import { IItemLock } from "../../../models/websocket-lock-item.interface";
+import { Subscription } from "rxjs";
 
 
 // eslint-disable-next-line @typescript-eslint/typedef
@@ -33,14 +35,22 @@ export class AccountsComponent implements OnInit, OnDestroy {
         [UserRole.CLIENT]: { name: "Клиенты", selected: true }
     };
     private _allUsers: IUserLocked[] = [];
+    private _itemLockUpdateSubscription: Subscription;
 
     constructor(private _wsUserController: WSUserController) {
     }
 
     public ngOnInit(): void {
+        this._itemLockUpdateSubscription = this._wsUserController.updateLock$.subscribe((itemToUpdateLock: IItemLock) => {
+            let index: number = this._allUsers.findIndex((user: IUserLocked) => user.id === itemToUpdateLock.itemId);
+            this._allUsers[index].lockStatus = itemToUpdateLock.status;
+            index = this.viewUsers.findIndex((user: IUserLocked) => user.id === itemToUpdateLock.itemId);
+            this.viewUsers[index].lockStatus = itemToUpdateLock.status;
+        });
     }
 
     public ngOnDestroy(): void {
+        this._itemLockUpdateSubscription.unsubscribe();
     }
 
     public loadUsers(): void {

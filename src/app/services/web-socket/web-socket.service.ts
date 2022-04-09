@@ -57,7 +57,8 @@ export class WebSocketService {
 
     private close(): void {
         if (this._wasConnectionWithoutError) {
-            console.log("сервер закрыл websocket, ошибка не произошла");
+            console.log("соединение закрыто");
+            console.log(this._webSocket.readyState);
         }
     }
 

@@ -13,8 +13,12 @@ import { IItemLock } from "../../../models/websocket-lock-item.interface";
 export class WSUserController extends WebSocketControllerAbstract {
     private _allUsers$: Subject<IUserLocked[]> = new Subject<IUserLocked[]>();
     private _canEdit$: Subject<boolean> = new Subject<boolean>();
+    private _updateLock$: Subject<IItemLock> = new Subject<IItemLock>();
     private readonly _endPointsSelector: { [key: string]: Function } = {};
 
+    public get updateLock$(): Observable<IItemLock>{
+        return this._updateLock$.asObservable();
+    }
 
     constructor(private _webSocketService: WebSocketService, private _mainController: WSMainController) {
         super();
@@ -75,5 +79,7 @@ export class WSUserController extends WebSocketControllerAbstract {
             this._allUsers$.next(wsMessageToClient.clientData);
         this._endPointsSelector["editRightResponse"] = (wsMessageToClient: IWSMessageToClient): void =>
             this._canEdit$.next(wsMessageToClient.clientData);
+        this._endPointsSelector["updateLock"] = (wsMessageToClient: IWSMessageToClient): void =>
+            this._updateLock$.next(wsMessageToClient.clientData);
     }
 }

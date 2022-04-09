@@ -1,4 +1,4 @@
-<div class="border account-item" [class.locked]="isLocked" [class.edited]="canEdit">
+<div class="border account-item" [class.locked]="user.lockStatus === 'Lock'" [class.edited]="canEdit">
   <div class="left-block">
     <button class="btn btn-default" (click)="changeExtendMode()">
       <span class="glyphicon" [class.down]="!isExtended" [class.up]="isExtended"></span>
