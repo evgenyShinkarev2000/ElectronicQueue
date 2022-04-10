@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { IUserLocked } from "../../../../models/user-model-locked.interface";
 import { WebSocketService } from "../../../../services/web-socket/web-socket.service";
 import { IItemLock } from "../../../../models/websocket-lock-item.interface";
@@ -11,7 +11,7 @@ import { WSUserController } from "../../../../services/web-socket/controllers/we
     templateUrl: './account-item.component.html',
     styleUrls: ['./account-item.component.scss']
 })
-export class AccountItemComponent implements OnInit {
+export class AccountItemComponent implements OnInit, AfterViewInit {
 
 
     @Input()
@@ -27,6 +27,12 @@ export class AccountItemComponent implements OnInit {
     ngOnInit(): void {
     }
 
+    ngAfterViewInit(): void{
+        if (this.user.lockStatus === "Lock"){
+            this.isLocked = true;
+        }
+    }
+
     public changeExtendMode(): void {
         this.isExtended = !this.isExtended;
     }
@@ -39,6 +45,7 @@ export class AccountItemComponent implements OnInit {
                 status: null,
                 userId: null
             });
+            this.user.lockStatus = "Free";
         } else {
             this._wsUserController.tryGetEditRight({
                 itemId: this.user.id,
@@ -46,6 +53,10 @@ export class AccountItemComponent implements OnInit {
                 status: null
             }).subscribe((response:boolean) => {
                 this.canEdit = response;
+                if (this.isLocked === true){
+                    alert("уже редактируется");
+                    this.isLocked = true;
+                }
             });
         }
     }

@@ -42,7 +42,6 @@ export class WSUserController extends WebSocketControllerAbstract {
     }
 
     public tryGetEditRight(itemToLock: IItemLock): Observable<boolean>{
-        //соединение падает на 2-ом вызове, всегда
         this._webSocketService.send({
             serverData: itemToLock,
             serverInstructions: ["getEditRight"]

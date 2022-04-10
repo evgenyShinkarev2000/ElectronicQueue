@@ -43,8 +43,14 @@ export class AccountsComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this._itemLockUpdateSubscription = this._wsUserController.updateLock$.subscribe((itemToUpdateLock: IItemLock) => {
             let index: number = this._allUsers.findIndex((user: IUserLocked) => user.id === itemToUpdateLock.itemId);
+            if (index < 0){
+                return;
+            }
             this._allUsers[index].lockStatus = itemToUpdateLock.status;
             index = this.viewUsers.findIndex((user: IUserLocked) => user.id === itemToUpdateLock.itemId);
+            if (index < 0){
+                return;
+            }
             this.viewUsers[index].lockStatus = itemToUpdateLock.status;
         });
     }
