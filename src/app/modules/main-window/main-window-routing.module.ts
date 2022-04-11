@@ -4,6 +4,7 @@ import { MainWindowComponent } from "./main-window.page.component";
 import { AccountsComponent } from "./accounts/accounts.component";
 import { QueuesComponent } from "./queues/queues.component";
 import { PersonalAccountComponent } from "./personal-account/personal-account.component";
+import { NgModel } from "@angular/forms";
 
 const routes: Routes = [
     {

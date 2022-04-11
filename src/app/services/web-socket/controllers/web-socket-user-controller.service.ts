@@ -5,7 +5,7 @@ import { WebSocketService } from "../web-socket.service";
 import { Observable, Subject, take } from "rxjs";
 import { IUserLocked } from "../../../models/user-model-locked.interface";
 import { WSMainController } from "../web-socket-entry-point.service";
-import { IItemLock } from "../../../models/websocket-lock-item.interface";
+import { IItemLockModel } from "../../../models/websocket-lock-item.interface";
 
 @Injectable({
     providedIn: 'root'
@@ -13,10 +13,10 @@ import { IItemLock } from "../../../models/websocket-lock-item.interface";
 export class WSUserController extends WebSocketControllerAbstract {
     private _allUsers$: Subject<IUserLocked[]> = new Subject<IUserLocked[]>();
     private _canEdit$: Subject<boolean> = new Subject<boolean>();
-    private _updateLock$: Subject<IItemLock> = new Subject<IItemLock>();
+    private _updateLock$: Subject<IItemLockModel> = new Subject<IItemLockModel>();
     private readonly _endPointsSelector: { [key: string]: Function } = {};
 
-    public get updateLock$(): Observable<IItemLock>{
+    public get updateLock$(): Observable<IItemLockModel>{
         return this._updateLock$.asObservable();
     }
 
@@ -34,14 +34,14 @@ export class WSUserController extends WebSocketControllerAbstract {
         return this._allUsers$.asObservable();
     }
 
-    public deleteEditRight(lockedItem: IItemLock): void{
+    public deleteEditRight(lockedItem: IItemLockModel): void{
         this._webSocketService.send({
             serverData: lockedItem,
             serverInstructions: ["deleteEditRight"]
         });
     }
 
-    public tryGetEditRight(itemToLock: IItemLock): Observable<boolean>{
+    public tryGetEditRight(itemToLock: IItemLockModel): Observable<boolean>{
         this._webSocketService.send({
             serverData: itemToLock,
             serverInstructions: ["getEditRight"]

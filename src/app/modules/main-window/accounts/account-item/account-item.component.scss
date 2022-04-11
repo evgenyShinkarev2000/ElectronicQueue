@@ -2,11 +2,12 @@
   display: flex;
   justify-content: space-between;
   box-sizing: border-box;
+  margin-bottom: 1px;
   &.edited{
-    background-color: lightgreen;
+    border-color: lightgreen !important;
   }
   &.locked{
-    background-color: lightyellow;
+    border-color: lightcoral !important;
   }
 
   .left-block {
@@ -68,6 +69,7 @@
       background-size: contain;
       width: 2rem;
       height: 2rem;
+      box-sizing: border-box;
     }
 
     .approve-btn {
@@ -84,6 +86,19 @@
       @extend .control-button;
       background-image: url("/assets/img/cancel.png");
     }
+
+    .remove-btn {
+      @extend .control-button;
+      background-image: url("/assets/img/trash.png");
+    }
+  }
+}
+
+input{
+  border: none;
+  &:disabled{
+    background-color: transparent;
+    color: inherit;
   }
 }
 

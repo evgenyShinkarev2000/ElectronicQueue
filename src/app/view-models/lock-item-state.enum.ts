@@ -1,4 +1,4 @@
-export enum LockItemStateEnum{
+export enum ItemLockState{
     lock,
     editedByMe,
     free

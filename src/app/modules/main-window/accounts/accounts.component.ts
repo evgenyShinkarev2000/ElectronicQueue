@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserRole } from "../../../services/permission/all-users-role.enum";
-import { WebSocketService } from "../../../services/web-socket/web-socket.service";
 import { IUserLocked } from "../../../models/user-model-locked.interface";
 import { WSUserController } from "../../../services/web-socket/controllers/web-socket-user-controller.service";
-import { IItemLock } from "../../../models/websocket-lock-item.interface";
+import { IItemLockModel } from "../../../models/websocket-lock-item.interface";
 import { Subscription } from "rxjs";
+import { ILockItemViewModel } from "../../../view-models/lock-item-model.interface";
+import { ItemLockState } from "../../../view-models/lock-item-state.enum";
+import { IUser } from "../../../models/user-model.interface";
 
 
 // eslint-disable-next-line @typescript-eslint/typedef
@@ -19,7 +21,7 @@ type SortOption = typeof sortOptions[number];
 })
 export class AccountsComponent implements OnInit, OnDestroy {
 
-    public viewUsers: IUserLocked[] = [];
+    public viewUsers: ILockItemViewModel[] = [];
     public readonly sortOptions: typeof sortOptions = sortOptions;
     public readonly sortOptionsName: { [key in SortOption]: string } = {
         firstName: "Имя по возрастанию",
@@ -34,24 +36,24 @@ export class AccountsComponent implements OnInit, OnDestroy {
         [UserRole.OPERATOR]: { name: "Операторы", selected: true },
         [UserRole.CLIENT]: { name: "Клиенты", selected: true }
     };
-    private _allUsers: IUserLocked[] = [];
+    private _allUsers: ILockItemViewModel[] = [];
     private _itemLockUpdateSubscription: Subscription;
 
     constructor(private _wsUserController: WSUserController) {
     }
 
     public ngOnInit(): void {
-        this._itemLockUpdateSubscription = this._wsUserController.updateLock$.subscribe((itemToUpdateLock: IItemLock) => {
-            let index: number = this._allUsers.findIndex((user: IUserLocked) => user.id === itemToUpdateLock.itemId);
+        this._itemLockUpdateSubscription = this._wsUserController.updateLock$.subscribe((itemToUpdateLock: IItemLockModel) => {
+            let index: number = this._allUsers.findIndex((item: ILockItemViewModel) => item.id === itemToUpdateLock.itemId);
             if (index < 0){
                 return;
             }
-            this._allUsers[index].lockStatus = itemToUpdateLock.status;
-            index = this.viewUsers.findIndex((user: IUserLocked) => user.id === itemToUpdateLock.itemId);
+            this._allUsers[index].lockState = itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;
+            index = this.viewUsers.findIndex((item: ILockItemViewModel) => item.id === itemToUpdateLock.itemId);
             if (index < 0){
                 return;
             }
-            this.viewUsers[index].lockStatus = itemToUpdateLock.status;
+            this.viewUsers[index].lockState =  itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;;
         });
     }
 
@@ -61,7 +63,16 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
     public loadUsers(): void {
         this._wsUserController.getAllUser().subscribe((users: IUserLocked[]) => {
-            this._allUsers = this._allUsers.concat(users);
+            const items: ILockItemViewModel[] = users.map((user:IUserLocked) => {
+                const item: ILockItemViewModel = {
+                    item: user as IUser,
+                    id: user.id,
+                    lockState: user.lockStatus === "Free" ? ItemLockState.free : ItemLockState.lock
+                };
+
+                return item;
+            });
+            this._allUsers = this._allUsers.concat(items);
             this.applyFilterAndSort();
         });
     }
@@ -77,8 +88,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
 
     public applyFilter(): void {
-        this.viewUsers = this._allUsers.filter((user: IUserLocked) => {
-            const userRole: string = user.role.toUpperCase();
+        this.viewUsers = this._allUsers.filter((user: ILockItemViewModel) => {
+            const userRole: string = user.item.role.toUpperCase();
             if (!(userRole in UserRole)) {
                 console.log("неизвестная роль");
 
@@ -91,14 +102,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
     public applySort(): void {
         console.log("sorted");
-        const selector: { [key in SortOption]: (a: IUserLocked, b: IUserLocked) => number } = {
-            firstName: (a: IUserLocked, b: IUserLocked) => a.firstName.localeCompare(b.firstName),
-            secondName: (a: IUserLocked, b: IUserLocked) => a.secondName.localeCompare(b.secondName),
-            firstNameDesc: (a: IUserLocked, b: IUserLocked) => -a.firstName.localeCompare(b.firstName),
-            secondNameDesc: (a: IUserLocked, b: IUserLocked) => -a.secondName.localeCompare(b.secondName)
+        const selector: { [key in SortOption]: (a: ILockItemViewModel, b: ILockItemViewModel) => number } = {
+            firstName: (a: ILockItemViewModel, b: ILockItemViewModel) => a.item.firstName.localeCompare(b.item.firstName),
+            secondName: (a: ILockItemViewModel, b: ILockItemViewModel) => a.item.secondName.localeCompare(b.item.secondName),
+            firstNameDesc: (a: ILockItemViewModel, b: ILockItemViewModel) => -a.item.firstName.localeCompare(b.item.firstName),
+            secondNameDesc: (a: ILockItemViewModel, b: ILockItemViewModel) => -a.item.secondName.localeCompare(b.item.secondName)
         };
         this.viewUsers.sort(selector[this.sortState]);
     }
-
-
 }

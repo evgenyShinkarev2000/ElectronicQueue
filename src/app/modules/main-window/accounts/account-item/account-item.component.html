@@ -1,26 +1,28 @@
-<div class="border account-item" [class.locked]="user.lockStatus === 'Lock' && !canEdit" [class.edited]="canEdit">
+<div class="border account-item" [class.locked]="isLockMode" [class.edited]="isEditMode">
   <div class="left-block">
     <button class="btn btn-default" (click)="changeExtendMode()">
       <span class="glyphicon" [class.down]="!isExtended" [class.up]="isExtended"></span>
     </button>
     <div class="all-info">
       <div class="info main-info">
-        <span>{{user.secondName}} </span>
-        <span>{{user.firstName}} </span>
-        <span>{{user.role}}</span>
+        <input [disabled]="!isEditMode" [value]="user.secondName">
+        <input [disabled]="!isEditMode" [value]="user.firstName">
+        <input [disabled]="!isEditMode" [value]="user.role">
       </div>
       <div class="info additional-info" *ngIf="isExtended">
-        <div><span class="description">Id</span><span>{{user.id}}</span></div>
-        <div><span class="description">Логин</span><span>{{user.login}}</span></div>
-        <div><span class="description">Пароль</span><span>{{user.password}}</span></div>
-        <div><span class="description">Информация</span> {{user.info}} </div>
-        <div><span class="description">Разрешения </span>{{user.permissions}} </div>
+        <div><span class="description">Id</span><input [disabled]="!isEditMode" [value]="user.id"></div>
+        <div><span class="description">Логин</span><input [disabled]="!isEditMode" [value]="user.login"></div>
+        <div><span class="description">Пароль</span><input [disabled]="!isEditMode" [value]="user.password"></div>
+        <div><span class="description">Информация</span><input [disabled]="!isEditMode" [value]="user.info ?? ''"></div>
+        <div><span class="description">Разрешения</span><input [disabled]="!isEditMode" [value]="user.permissions ?? ''"></div>
       </div>
     </div>
   </div>
   <div class="control-buttons">
-    <button class="btn approve-btn"></button>
-    <button class="btn edit-btn" (click)="changeEditMode()"></button>
-    <button class="btn cancel-btn"></button>
+    <span class="me-1" *ngIf="isEditMode">{{isRemoveMode ? "Удалить пользователя?" : "Применить изменения?"}}</span>
+    <button class="btn approve-btn" *ngIf="isEditMode" (click)="saveChanges()"></button>
+    <button class="btn edit-btn" *ngIf="isFreeMode" (click)="changeEditMode()"></button>
+    <button class="btn remove-btn" *ngIf="isFreeMode" (click)="removeUser()"></button>
+    <button class="btn cancel-btn" *ngIf="isEditMode" (click)="undoChanges()"></button>
   </div>
 </div>

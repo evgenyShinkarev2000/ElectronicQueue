@@ -1,6 +1,6 @@
 export type WebSocketLockStatus = "Lock" | "Free";
 
-export interface IItemLock {
+export interface IItemLockModel {
     userId: string,
     itemId: string,
     status: WebSocketLockStatus

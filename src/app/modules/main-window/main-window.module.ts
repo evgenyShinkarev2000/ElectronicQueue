@@ -7,7 +7,7 @@ import { AccountsComponent } from "./accounts/accounts.component";
 import { QueuesComponent } from './queues/queues.component';
 import { PersonalAccountComponent } from './personal-account/personal-account.component';
 import { NgxPermissionsModule } from "ngx-permissions";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, NgModel } from "@angular/forms";
 import { AccountItemComponent } from './accounts/account-item/account-item.component';
 
 
