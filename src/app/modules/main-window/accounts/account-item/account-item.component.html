@@ -1,28 +1,55 @@
-<div class="border account-item" [class.locked]="isLockMode" [class.edited]="isEditMode">
+<div class="border account-item" [class.locked]="isLock" [class.edited]="canEdit">
   <div class="left-block">
-    <button class="btn btn-default" (click)="changeExtendMode()">
-      <span class="glyphicon" [class.down]="!isExtended" [class.up]="isExtended"></span>
+    <button class="btn btn-default" (click)="changeExtend()">
+      <span class="glyphicon" [class.down]="!isExtend" [class.up]="isExtend"></span>
     </button>
-    <div class="all-info">
-      <div class="info main-info">
-        <input [disabled]="!isEditMode" [value]="user.secondName">
-        <input [disabled]="!isEditMode" [value]="user.firstName">
-        <input [disabled]="!isEditMode" [value]="user.role">
+    <form class="all-info" [formGroup]="form">
+      <div class="main-info">
+        <input [formControlName]="formControlsExtension.secondName.name">
+        <input [formControlName]="formControlsExtension.firstName.name">
+        <input [disabled]="true" [value]="user.role">
       </div>
-      <div class="info additional-info" *ngIf="isExtended">
-        <div><span class="description">Id</span><input [disabled]="!isEditMode" [value]="user.id"></div>
-        <div><span class="description">Логин</span><input [disabled]="!isEditMode" [value]="user.login"></div>
-        <div><span class="description">Пароль</span><input [disabled]="!isEditMode" [value]="user.password"></div>
-        <div><span class="description">Информация</span><input [disabled]="!isEditMode" [value]="user.info ?? ''"></div>
-        <div><span class="description">Разрешения</span><input [disabled]="!isEditMode" [value]="user.permissions ?? ''"></div>
+      <div class="additional-info" *ngIf="isExtend">
+        <div>
+          <span class="description">Id</span><input [disabled]="true" [value]="user.id">
+        </div>
+        <div>
+          <span class="description">Логин</span><input
+          [formControlName]="formControlsExtension.login.name">
+          <small class="text-danger"
+                 *ngIf="formControlsExtension.login.invalid">{{formControlsExtension.login.errorMessages}}</small>
+        </div>
+        <div>
+          <span class="description">Пароль</span><input
+          [formControlName]="formControlsExtension.password.name">
+          <small class="text-danger"
+                 *ngIf="formControlsExtension.password.invalid">{{formControlsExtension.password.errorMessages}}</small>
+        </div>
+        <div>
+          <span class="description">Информация</span><input [disabled]="true" [value]="user.info ?? ''">
+        </div>
+        <div>
+          <span class="description">Разрешения</span><input [disabled]="true"
+                                                            [value]="user.permissions ?? ''">
+        </div>
       </div>
-    </div>
+    </form>
   </div>
-  <div class="control-buttons">
-    <span class="me-1" *ngIf="isEditMode">{{isRemoveMode ? "Удалить пользователя?" : "Применить изменения?"}}</span>
-    <button class="btn approve-btn" *ngIf="isEditMode" (click)="saveChanges()"></button>
-    <button class="btn edit-btn" *ngIf="isFreeMode" (click)="changeEditMode()"></button>
-    <button class="btn remove-btn" *ngIf="isFreeMode" (click)="removeUser()"></button>
-    <button class="btn cancel-btn" *ngIf="isEditMode" (click)="undoChanges()"></button>
+  <div class="right-block">
+    <div class="message" *ngIf="itemLockState === ItemLockState.editedByMe">
+      <span class="me-1" *ngIf="itemMode === ItemMode.remove">Удалить пользователя?</span>
+      <span class="me-1" *ngIf="itemMode === ItemMode.edit">Применить изменения?</span>
+    </div>
+    <div class="message" *ngIf="itemLockState === ItemLockState.lock">
+      <span class="me-1">Занято</span>
+    </div>
+    <div class="control-buttons" *ngIf="itemLockState === ItemLockState.free">
+      <button class="btn edit-btn" (click)="editUser()"></button>
+      <button class="btn remove-btn" (click)="removeUser()"></button>
+    </div>
+    <div class="control-buttons" *ngIf="itemLockState === ItemLockState.editedByMe">
+      <button class="btn approve-btn" (click)="saveChanges()"></button>
+      <button class="btn cancel-btn" (click)="undoChanges()"></button>
+    </div>
   </div>
 </div>

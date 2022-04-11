@@ -2,7 +2,7 @@ import { AfterContentInit, Component } from '@angular/core';
 import { FormGroup } from "@angular/forms";
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
-import { AppFormValidationService } from "../../../view-models/form-validation/form-validation-model";
+import { FormControlsExtension } from "../../../view-models/form-validation/form-validation-model";
 import { FormControlExtension } from "../../../view-models/form-validation/form-control-extension";
 
 export enum FormStates {
@@ -14,7 +14,7 @@ export enum FormStates {
     selector: 'app-auth-form',
     templateUrl: './auth-form.component.html',
     styleUrls: ['./auth-form.component.scss'],
-    providers: [AppFormValidationService]
+    providers: [FormControlsExtension]
 })
 export class AuthFormPageComponent implements AfterContentInit {
     public formState: FormStates = FormStates.logIn;
@@ -29,7 +29,7 @@ export class AuthFormPageComponent implements AfterContentInit {
 
 
     constructor(
-        public validService: AppFormValidationService,
+        public validService: FormControlsExtension,
         private _location: Location,
         private _router: Router,
     ) {

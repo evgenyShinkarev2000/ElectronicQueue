@@ -1,76 +1,105 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AuthService } from "../../../../services/authentication/auth.service";
 import { WSUserController } from "../../../../services/web-socket/controllers/web-socket-user-controller.service";
 import { ItemLockState } from "../../../../view-models/lock-item-state.enum";
 import { IUser } from "../../../../models/user-model.interface";
+import { FormGroup } from "@angular/forms";
+import { FormControlsExtension } from "../../../../view-models/form-validation/form-validation-model";
+import { ItemMode } from "./item-mode.enum";
+import { Observable } from "rxjs";
 
 @Component({
     selector: 'app-account-item',
     templateUrl: './account-item.component.html',
-    styleUrls: ['./account-item.component.scss']
+    styleUrls: ['./new-account-item.component.scss']
 })
-export class AccountItemComponent implements OnInit, AfterViewInit {
+export class AccountItemComponent implements OnInit{
     @Input()
-    public itemLockState: ItemLockState = ItemLockState.lock;
+    public itemLockState: ItemLockState;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    public ItemLockState: typeof ItemLockState = ItemLockState;
     @Output()
     public itemLockStateChange: EventEmitter<ItemLockState> = new EventEmitter<ItemLockState>();
     @Input()
     public user: IUser;
-    public isExtended: boolean = false;
+    public itemMode: ItemMode = ItemMode.unused;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    public ItemMode: typeof ItemMode = ItemMode;
+    public isExtend: boolean = false;
+    public formControlsExtension: FormControlsExtension = new FormControlsExtension();
+    public form: FormGroup;
 
-    public get isEditMode(): boolean {
+
+    public get canEdit(): boolean {
         return this.itemLockState === ItemLockState.editedByMe;
     }
 
-    public get isFreeMode(): boolean {
+    public get isFree(): boolean {
         return this.itemLockState === ItemLockState.free;
     }
 
-    public get isLockMode(): boolean {
+    public get isLock(): boolean {
         return this.itemLockState === ItemLockState.lock;
     }
 
-    public isRemoveMode: boolean = false;
 
     constructor(private _wsUserController: WSUserController, private _authService: AuthService) {
+        this.form = new FormGroup({
+            [this.formControlsExtension.login.name]: this.formControlsExtension.login,
+            [this.formControlsExtension.password.name]: this.formControlsExtension.password,
+            [this.formControlsExtension.firstName.name]: this.formControlsExtension.firstName,
+            [this.formControlsExtension.secondName.name]: this.formControlsExtension.secondName
+        });
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
+        this.formControlsExtension.login.setValue(this.user.login);
+        this.formControlsExtension.password.setValue(this.user.password);
+        this.formControlsExtension.secondName.setValue(this.user.secondName);
+        this.formControlsExtension.firstName.setValue(this.user.firstName);
+        this.disableInputs();
     }
 
-    ngAfterViewInit(): void {
+    public changeExtend(): void {
+        this.isExtend = !this.isExtend;
     }
 
-    public changeExtendMode(): void {
-        this.isExtended = !this.isExtended;
-    }
 
-    public changeEditMode(): void {
-        this.isRemoveMode = false;
+    public editUser(): void {
         if (this.itemLockState === ItemLockState.editedByMe) {
             this.deleteEditRight();
         } else {
-            this.tryGetEditRight();
+            this.tryGetEditRight().subscribe((canEdit: boolean) => {
+                if (canEdit){
+                    this.enableInputs();
+                    this.itemMode = ItemMode.edit;
+                }
+            });
         }
     }
 
     public saveChanges(): void {
-        this.itemLockState = ItemLockState.free;
         this.deleteEditRight();
     }
 
     public undoChanges(): void{
-        this.itemLockState = ItemLockState.free;
         this.deleteEditRight();
     }
 
     public removeUser(): void {
-        this.tryGetEditRight();
-        this.isRemoveMode = true;
+        this.tryGetEditRight().subscribe((canRemove: boolean) => {
+            if (canRemove){
+                this.itemMode = ItemMode.remove;
+            }
+        });
     }
+
+
 
     private deleteEditRight(): void {
         this.itemLockState = ItemLockState.free;
+        this.disableInputs();
+        this.itemMode = ItemMode.unused;
         this._wsUserController.deleteEditRight({
             itemId: this.user.id,
             status: null,
@@ -80,18 +109,32 @@ export class AccountItemComponent implements OnInit, AfterViewInit {
         this.onItemLockStateChange();
     }
 
-    private tryGetEditRight(): void {
-        this._wsUserController.tryGetEditRight({
+    private tryGetEditRight(): Observable<boolean> {
+        const response$: Observable<boolean> = this._wsUserController.tryGetEditRight({
             itemId: this.user.id,
             userId: null,
             status: null
-        }).subscribe((canEdit: boolean) => {
+        });
+        response$.subscribe((canEdit: boolean) => {
             this.itemLockState = canEdit ? ItemLockState.editedByMe : ItemLockState.lock;
             this.onItemLockStateChange();
         });
+
+        return response$;
     }
 
     private onItemLockStateChange(): void {
         this.itemLockStateChange.emit(this.itemLockState);
+    }
+
+    private disableInputs(): void{
+        for (const controlsKey in this.form.controls) {
+            this.form.get(controlsKey).disable();
+        }
+    }
+    private enableInputs(): void{
+        for (const controlsKey in this.form.controls) {
+            this.form.get(controlsKey).enable();
+        }
     }
 }

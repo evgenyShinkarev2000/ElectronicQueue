@@ -1,0 +1,146 @@
+.account-item {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.25rem;
+  padding-top: 0.25rem;
+
+  &.edited {
+    border-color: lightgreen !important;
+  }
+
+  &.locked {
+    border-color: lightcoral !important;
+  }
+
+  .left-block {
+    flex-basis: 60%;
+    display: flex;
+    justify-content: flex-start;
+
+    button {
+      display: flex;
+      align-self: center;
+
+      .down::before {
+        content: "";
+        background-image: url("/assets/img/arrow-icon.png");
+        background-size: contain;
+        width: 1.2rem;
+        height: 1.2rem;
+        display: inline-block;
+        transform: rotate(90deg);
+      }
+
+      .up::before {
+        @extend .down;
+        transform: rotate(-90deg);
+      }
+    }
+
+    .all-info {
+      display: flex;
+      flex-basis: 100%;
+      flex-direction: column;
+
+      .main-info {
+        display: flex;
+        flex-basis: 100%;
+        justify-content: space-between;
+
+      }
+
+      .additional-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        div {
+          display: flex;
+          justify-content: flex-start;
+
+          .description {
+            flex-basis: 34.5%;
+            margin-left: 2px;
+          }
+
+          input {
+
+          }
+
+          small {
+            vertical-align: center;
+            margin-left: 0.5rem;
+          }
+        }
+      }
+    }
+
+  }
+
+  .right-block {
+    flex-basis: 30%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .message {
+
+    }
+
+    .control-buttons {
+      flex-basis: 20%;
+      display: flex;
+      justify-content: space-around;
+
+      .control-button {
+        background-repeat: no-repeat;
+        background-size: contain;
+        width: 2rem;
+        height: 2rem;
+        box-sizing: border-box;
+      }
+
+      .approve-btn {
+        @extend .control-button;
+        background-image: url("/assets/img/approve.png");
+      }
+
+      .edit-btn {
+        @extend .control-button;
+        background-image: url("/assets/img/edit.png");
+      }
+
+      .cancel-btn {
+        @extend .control-button;
+        background-image: url("/assets/img/cancel.png");
+      }
+
+      .remove-btn {
+        @extend .control-button;
+        background-image: url("/assets/img/trash.png");
+      }
+    }
+
+  }
+}
+
+input {
+  margin-bottom: 1px;
+  margin-top: 1px;
+  border: 1px solid lightgreen;
+
+  &:disabled {
+    background-color: transparent;
+    color: inherit;
+    border-color: transparent;
+  }
+
+  &.ng-invalid.ng-touched.ng-dirty {
+    border: 1px solid lightcoral;
+  }
+
+  &.ng-valid.ng-touched {
+    border: 1px solid lightgreen;
+  }
+}
+

@@ -7,8 +7,9 @@ import { AccountsComponent } from "./accounts/accounts.component";
 import { QueuesComponent } from './queues/queues.component';
 import { PersonalAccountComponent } from './personal-account/personal-account.component';
 import { NgxPermissionsModule } from "ngx-permissions";
-import { FormsModule, NgModel } from "@angular/forms";
+import { FormsModule, NgModel, ReactiveFormsModule } from "@angular/forms";
 import { AccountItemComponent } from './accounts/account-item/account-item.component';
+import { CreateAccountComponent } from './accounts/create-account/create-account.component';
 
 
 @NgModule({
@@ -17,13 +18,15 @@ import { AccountItemComponent } from './accounts/account-item/account-item.compo
         AccountsComponent,
         QueuesComponent,
         PersonalAccountComponent,
-        AccountItemComponent
+        AccountItemComponent,
+        CreateAccountComponent
     ],
     imports: [
         CommonModule,
         MainWindowRoutingModule,
         NgxPermissionsModule.forChild(),
-        FormsModule
+        FormsModule,
+        ReactiveFormsModule
     ]
 })
 export class MainWindowModule {

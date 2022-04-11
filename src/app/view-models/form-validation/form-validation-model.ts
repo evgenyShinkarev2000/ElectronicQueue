@@ -1,7 +1,7 @@
 import { Validators } from "@angular/forms";
 import { FormControlExtension } from "./form-control-extension";
 
-export class AppFormValidationService {
+export class FormControlsExtension {
     private _login: FormControlExtension;
     private _password: FormControlExtension;
     private _firstName: FormControlExtension;
