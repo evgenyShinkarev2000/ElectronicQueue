@@ -4,7 +4,7 @@ import { WSUserController } from "../../../../services/web-socket/controllers/we
 import { ItemLockState } from "../../../../view-models/lock-item-state.enum";
 import { IUser } from "../../../../models/user-model.interface";
 import { FormGroup } from "@angular/forms";
-import { FormControlsExtension } from "../../../../view-models/form-validation/form-validation-model";
+import { FormControlsExtensionModel } from "../../../../view-models/form-validation/form-controls-extension-model";
 import { ItemMode } from "./item-mode.enum";
 import { Observable } from "rxjs";
 
@@ -26,7 +26,7 @@ export class AccountItemComponent implements OnInit{
     // eslint-disable-next-line @typescript-eslint/naming-convention
     public ItemMode: typeof ItemMode = ItemMode;
     public isExtend: boolean = false;
-    public formControlsExtension: FormControlsExtension = new FormControlsExtension();
+    public formControlsExtension: FormControlsExtensionModel = new FormControlsExtensionModel();
     public form: FormGroup;
 
 

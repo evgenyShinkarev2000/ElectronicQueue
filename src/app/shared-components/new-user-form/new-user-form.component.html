@@ -1,0 +1,17 @@
+<form [formGroup]="form">
+  <table>
+    <tr *ngFor="let control of formControlsExtension.getFormControlExtensionsList()">
+      <td>
+        <label [for]="control.name">
+          <span class="description">{{control.descriptionLabel}}</span>
+        </label>
+      </td>
+      <td><input [type]="control.type" [formControlName]="control.name" [id]="control.name"></td>
+      <td>
+        <label [for]="control.name">
+          <small class="text-danger message">{{control.invalid ? control.errorMessages : ""}}</small>
+        </label>
+      </td>
+    </tr>
+  </table>
+</form>

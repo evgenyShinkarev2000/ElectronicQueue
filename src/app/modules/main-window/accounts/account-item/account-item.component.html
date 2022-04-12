@@ -1,4 +1,5 @@
-<div class="border account-item" [class.locked]="isLock" [class.edited]="canEdit">
+<div class="border account-item" [class.locked]="isLock" [class.edited]="canEdit"
+     [class.selected]="isExtend || canEdit">
   <div class="left-block">
     <button class="btn btn-default" (click)="changeExtend()">
       <span class="glyphicon" [class.down]="!isExtend" [class.up]="isExtend"></span>

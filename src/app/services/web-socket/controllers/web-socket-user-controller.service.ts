@@ -20,12 +20,20 @@ export class WSUserController extends WebSocketControllerAbstract {
         return this._updateLock$.asObservable();
     }
 
+    public override get connectionState$(): Observable<boolean>{
+        return this._webSocketService.listenConnectionState$();
+    }
+
     constructor(private _webSocketService: WebSocketService, private _mainController: WSMainController) {
         super();
         this.initEndPointSelector();
         this._mainController.listenMessage$.subscribe((wsMessageToClient: IWSMessageToClient) => {
             this.handleServerMessage(wsMessageToClient);
         });
+    }
+
+    public override checkConnection(): boolean {
+        return this._webSocketService.checkConnection();
     }
 
     public getAllUser(): Observable<IUserLocked[]> {

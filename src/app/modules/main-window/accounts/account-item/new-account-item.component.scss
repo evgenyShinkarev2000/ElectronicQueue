@@ -124,6 +124,15 @@
   }
 }
 
+.account-item:hover,
+.account-item.selected{
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  transition: 0.2s ease-in 0.2s;
+  box-shadow: 2px 2px 4px rgba(210, 210, 210, 1);
+  border: 1px solid lightslategrey !important;
+}
+
 input {
   margin-bottom: 1px;
   margin-top: 1px;

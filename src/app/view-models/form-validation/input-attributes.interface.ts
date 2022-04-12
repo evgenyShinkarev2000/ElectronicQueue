@@ -23,8 +23,3 @@ export type HTMLInputTypeAttribute =
     | "time"
     | "url"
     | "week";
-
-export interface IInputAttributes {
-    placeHolder?: string,
-    type?: HTMLInputTypeAttribute
-}

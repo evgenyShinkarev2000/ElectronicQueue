@@ -1,0 +1,46 @@
+
+.create-account {
+  margin-bottom: 1rem;
+  .inactive {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    $gray-deep: 240;
+    background-color: rgba($gray-deep, $gray-deep, $gray-deep, 0.2);
+
+    img {
+      height: 2rem;
+      width: 2rem;
+      margin: 1rem;
+    }
+
+    &:hover {
+      transition: 0.3s;
+      $gray-deep-hover: 220;
+      background-color: rgba($gray-deep-hover, $gray-deep-hover, $gray-deep-hover);
+    }
+  }
+  .create-account-form{
+    padding: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .left-block{
+
+    }
+    .right-block{
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+      *{
+        margin-left: 1rem;
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+
+}

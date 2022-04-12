@@ -10,6 +10,7 @@ import { NgxPermissionsModule } from "ngx-permissions";
 import { FormsModule, NgModel, ReactiveFormsModule } from "@angular/forms";
 import { AccountItemComponent } from './accounts/account-item/account-item.component';
 import { CreateAccountComponent } from './accounts/create-account/create-account.component';
+import { NewUserFormComponent } from "../../shared-components/new-user-form/new-user-form.component";
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { CreateAccountComponent } from './accounts/create-account/create-account
         QueuesComponent,
         PersonalAccountComponent,
         AccountItemComponent,
-        CreateAccountComponent
+        CreateAccountComponent,
+        NewUserFormComponent
     ],
     imports: [
         CommonModule,

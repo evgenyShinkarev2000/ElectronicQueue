@@ -1,0 +1,21 @@
+form{
+  padding: 0.5rem;
+  .description{
+    margin-right: 1rem;
+  }
+  .message{
+    margin-left: 1rem;
+    min-width: 10rem;
+    display: flex;
+    align-self: center;
+  }
+}
+input {
+  &.ng-invalid.ng-touched {
+    border: 1px solid lightcoral;
+  }
+
+  &.ng-valid {
+    border: 1px solid lightgreen;
+  }
+}

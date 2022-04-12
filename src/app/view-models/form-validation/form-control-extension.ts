@@ -1,15 +1,17 @@
 import { FormControl, ValidatorFn } from "@angular/forms";
-import { HTMLInputTypeAttribute, IInputAttributes } from "./input-attributes.interface";
+import { HTMLInputTypeAttribute } from "./input-attributes.interface";
+import { IFormExtensionOptionalParam } from "./form-control-extesion-optional-param.interface";
 
 export class FormControlExtension extends FormControl {
     public readonly name: string;
-    public readonly placeHolder: string;
+    public placeHolder: string = "";
     public readonly type: HTMLInputTypeAttribute;
+    public descriptionLabel: string = "";
 
     constructor(
         name: string,
         validatorFn?: ValidatorFn | ValidatorFn[],
-        attributes?: IInputAttributes
+        optionalParam?: IFormExtensionOptionalParam
     ) {
         super(null, validatorFn);
 
@@ -17,14 +19,18 @@ export class FormControlExtension extends FormControl {
             throw new Error("Требуется имя для FormControl");
         }
 
-        this.placeHolder = attributes?.placeHolder ?? name;
-        this.type = attributes?.type ?? "text";
         this.name = name;
+        if (!optionalParam){
+            return;
+        }
+        this.placeHolder = optionalParam.placeHolder ?? name;
+        this.type = optionalParam.type ?? "text";
+        this.descriptionLabel = optionalParam.descriptionLabel ?? "";
     }
 
     public get errorMessages(): string[] {
         const selector: { [key: string]: string } = {
-            "required": "Поле Обязательно"
+            "required": "Поле обязательно"
         };
 
         const errors: string[] = Object.keys(this.errors).filter((errorName: string) => this.errors[errorName]);

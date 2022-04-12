@@ -3,7 +3,7 @@ import { FormGroup } from "@angular/forms";
 import { FormStates } from "../auth-form.page.component";
 import { AuthService } from "../../../../services/authentication/auth.service";
 import { Router } from "@angular/router";
-import { FormControlsExtension } from "../../../../view-models/form-validation/form-validation-model";
+import { FormControlsExtensionModel } from "../../../../view-models/form-validation/form-controls-extension-model";
 import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
@@ -17,7 +17,7 @@ export class SubmitButtonComponent {
     @Input()
     public formState: FormStates;
     @Input()
-    public validService: FormControlsExtension;
+    public validService: FormControlsExtensionModel;
 
     public get submitButtonName(): string {
         return this._submitButtonNameSelector[this.formState];

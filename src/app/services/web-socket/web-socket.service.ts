@@ -6,9 +6,7 @@ import { Observable, Subject } from "rxjs";
     providedIn: 'root'
 })
 export class WebSocketService {
-    public get listenMessage$(): Observable<string>{
-        return this._message$.asObservable();
-    }
+    private readonly _connectionState$: Subject<boolean> = new Subject<boolean>();
     private readonly _message$: Subject<string> = new Subject<string>();
     private _webSocket: WebSocket;
     private readonly _reconnectLimit: number = 5;
@@ -18,6 +16,17 @@ export class WebSocketService {
 
     constructor() {
         this.connect();
+    }
+
+    public get listenMessage$(): Observable<string>{
+        return this._message$.asObservable();
+    }
+
+    public checkConnection(): boolean{
+        return this._webSocket.readyState === this._webSocket.OPEN;
+    }
+    public listenConnectionState$(): Observable<boolean>{
+        return this._connectionState$.asObservable();
     }
 
     public send(wsMessageToServer: IWSMessageToServer): void{
@@ -56,6 +65,7 @@ export class WebSocketService {
     }
 
     private close(): void {
+        this._connectionState$.next(false);
         if (this._wasConnectionWithoutError) {
             console.log("соединение закрыто");
             console.log(this._webSocket.readyState);
@@ -64,6 +74,7 @@ export class WebSocketService {
 
     private open(): void {
         console.log("успешное подключение к websocket");
+        this._connectionState$.next(true);
         this._webSocket.onmessage = (message: MessageEvent): void =>
             this._message$.next(message.data);
         this._wasConnectionWithoutError = true;

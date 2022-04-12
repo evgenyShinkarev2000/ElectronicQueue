@@ -29,6 +29,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         firstNameDesc: "Имя по убыванию",
         secondNameDesc: "Фамилия по убыванию"
     };
+    public hasConnection: boolean = false;
     public sortState: SortOption = "secondName";
     public roleFilterOptions: UserRole[] = Object.keys(UserRole) as unknown as UserRole[];
     public roleFilterModel: { [key in UserRole]: { name: string, selected: boolean } } = {
@@ -38,6 +39,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     };
     private _allUsers: ILockItemViewModel[] = [];
     private _itemLockUpdateSubscription: Subscription;
+    private _connectionStateSubscription: Subscription;
 
     constructor(private _wsUserController: WSUserController) {
     }
@@ -45,25 +47,31 @@ export class AccountsComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this._itemLockUpdateSubscription = this._wsUserController.updateLock$.subscribe((itemToUpdateLock: IItemLockModel) => {
             let index: number = this._allUsers.findIndex((item: ILockItemViewModel) => item.id === itemToUpdateLock.itemId);
-            if (index < 0){
+            if (index < 0) {
                 return;
             }
             this._allUsers[index].lockState = itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;
             index = this.viewUsers.findIndex((item: ILockItemViewModel) => item.id === itemToUpdateLock.itemId);
-            if (index < 0){
+            if (index < 0) {
                 return;
             }
-            this.viewUsers[index].lockState =  itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;;
+            this.viewUsers[index].lockState = itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;
+
+        });
+        this.hasConnection = this._wsUserController.checkConnection();
+        this._connectionStateSubscription = this._wsUserController.connectionState$.subscribe((connectionState: boolean) => {
+            this.hasConnection = connectionState;
         });
     }
 
     public ngOnDestroy(): void {
         this._itemLockUpdateSubscription.unsubscribe();
+        this._connectionStateSubscription.unsubscribe();
     }
 
     public loadUsers(): void {
         this._wsUserController.getAllUser().subscribe((users: IUserLocked[]) => {
-            const items: ILockItemViewModel[] = users.map((user:IUserLocked) => {
+            const items: ILockItemViewModel[] = users.map((user: IUserLocked) => {
                 const item: ILockItemViewModel = {
                     item: user as IUser,
                     id: user.id,

@@ -1,0 +1,15 @@
+<div class="create-account border shadow-sm">
+  <div class="inactive" *ngIf="!isAddUserMode" (click)="changeMode()">
+    <img src="assets/img/add-new.png" alt="+" title="Добавить пользовтеля">
+  </div>
+  <div class="create-account-form" *ngIf="isAddUserMode">
+    <div class="left-block">
+      <app-new-user-form [form]="form" [formControlsExtension]="formControlsExtension"></app-new-user-form>
+    </div>
+    <div class="right-block">
+      <span class="message">Невозможно добавить, пните разраба</span>
+      <button class="btn btn-outline-primary btn-submit">Добавить</button>
+      <button class="btn btn-danger btn-cancel" (click)="changeMode()">Отменить</button>
+    </div>
+  </div>
+</div>

@@ -13,10 +13,12 @@
       </label>
     </div>
   </div>
+  <app-create-account *ngIf="hasConnection"></app-create-account>
   <div class="account-items">
 
     <app-account-item *ngFor="let userItem of viewUsers" [user]="userItem.item"
                       [(itemLockState)]="userItem.lockState"></app-account-item>
-    <button class="btn btn-primary" type="button" (click)="loadUsers()">Загрузить пользователей</button>
+    <button class="btn btn-primary" type="button" (click)="loadUsers()"
+            [disabled]="!hasConnection">{{hasConnection ? "Загрузить пользователей" : "Ожидание подключения..."}}</button>
   </div>
 </div>
