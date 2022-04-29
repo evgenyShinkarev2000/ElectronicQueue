@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { catchError, map, Observable, of } from "rxjs";
+import { catchError, map, Observable, of, take } from "rxjs";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { CanActivate, Router } from "@angular/router";
 import { IUserLoginData } from "../../models/user-login-data.interface";
@@ -110,5 +110,15 @@ export class AuthService implements CanActivate {
         this._router.navigate(["auth/login"]);
 
         return false;
+    }
+
+    public getWebSocketTicket(): Observable<string>{
+        const role: UserRole = this.userAuthData.role;
+
+        return this._httpClient.get(`https://localhost:44315/ws/WebSocket${role}/Ticket`, {
+            responseType: "text"
+        }).pipe(
+            take(1)
+        );
     }
 }

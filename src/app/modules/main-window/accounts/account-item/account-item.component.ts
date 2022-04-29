@@ -13,7 +13,7 @@ import { Observable } from "rxjs";
     templateUrl: './account-item.component.html',
     styleUrls: ['./new-account-item.component.scss']
 })
-export class AccountItemComponent implements OnInit{
+export class AccountItemComponent implements OnInit {
     @Input()
     public itemLockState: ItemLockState;
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -53,10 +53,7 @@ export class AccountItemComponent implements OnInit{
     }
 
     public ngOnInit(): void {
-        this.formControlsExtension.login.setValue(this.user.login);
-        this.formControlsExtension.password.setValue(this.user.password);
-        this.formControlsExtension.secondName.setValue(this.user.secondName);
-        this.formControlsExtension.firstName.setValue(this.user.firstName);
+        this.setBeginInputs();
         this.disableInputs();
     }
 
@@ -64,13 +61,12 @@ export class AccountItemComponent implements OnInit{
         this.isExtend = !this.isExtend;
     }
 
-
     public editUser(): void {
         if (this.itemLockState === ItemLockState.editedByMe) {
             this.deleteEditRight();
         } else {
             this.tryGetEditRight().subscribe((canEdit: boolean) => {
-                if (canEdit){
+                if (canEdit) {
                     this.enableInputs();
                     this.itemMode = ItemMode.edit;
                 }
@@ -79,22 +75,32 @@ export class AccountItemComponent implements OnInit{
     }
 
     public saveChanges(): void {
+        if (this.itemMode === ItemMode.edit) {
+            const updatedUser: IUser = { ...this.user };
+            updatedUser.login = this.formControlsExtension.login.value;
+            updatedUser.password = this.formControlsExtension.password.value;
+            updatedUser.firstName = this.formControlsExtension.firstName.value;
+            updatedUser.secondName = this.formControlsExtension.secondName.value;
+            this._wsUserController.updateUser(updatedUser);
+        }
+        else if (this.itemMode === ItemMode.remove){
+            this._wsUserController.deleteUser(this.user);
+        }
         this.deleteEditRight();
     }
 
-    public undoChanges(): void{
+    public undoChanges(): void {
         this.deleteEditRight();
+        this.setBeginInputs();
     }
 
     public removeUser(): void {
         this.tryGetEditRight().subscribe((canRemove: boolean) => {
-            if (canRemove){
+            if (canRemove) {
                 this.itemMode = ItemMode.remove;
             }
         });
     }
-
-
 
     private deleteEditRight(): void {
         this.itemLockState = ItemLockState.free;
@@ -127,14 +133,22 @@ export class AccountItemComponent implements OnInit{
         this.itemLockStateChange.emit(this.itemLockState);
     }
 
-    private disableInputs(): void{
+    private disableInputs(): void {
         for (const controlsKey in this.form.controls) {
             this.form.get(controlsKey).disable();
         }
     }
-    private enableInputs(): void{
+
+    private enableInputs(): void {
         for (const controlsKey in this.form.controls) {
             this.form.get(controlsKey).enable();
         }
+    }
+
+    private setBeginInputs(): void {
+        this.formControlsExtension.login.setValue(this.user.login);
+        this.formControlsExtension.password.setValue(this.user.password);
+        this.formControlsExtension.secondName.setValue(this.user.secondName);
+        this.formControlsExtension.firstName.setValue(this.user.firstName);
     }
 }

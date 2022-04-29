@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { IWSMessageToServer } from "./web-socket-message-to-server.interaface";
 import { Observable, Subject } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../authentication/auth.service";
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +16,7 @@ export class WebSocketService {
     private _wasConnectionWithoutError: boolean = false;
     private _reconnectCount: number = 0;
 
-    constructor() {
+    constructor(private _httpClient: HttpClient, private _authService: AuthService) {
         this.connect();
     }
 
@@ -23,7 +25,7 @@ export class WebSocketService {
     }
 
     public checkConnection(): boolean{
-        return this._webSocket.readyState === this._webSocket.OPEN;
+        return this._webSocket && this._webSocket.readyState === this._webSocket.OPEN;
     }
     public listenConnectionState$(): Observable<boolean>{
         return this._connectionState$.asObservable();
@@ -43,14 +45,16 @@ export class WebSocketService {
     }
 
     private connect(): void {
-        this._webSocket = new WebSocket("wss://localhost:44315/ws/WebSocketUser");
-        this._webSocket.onopen = (): void => this.open();
-        this._webSocket.onerror = (er:Event): void => {
-            this.reconnect();
-            console.log(er);
-        };
+        this._authService.getWebSocketTicket().subscribe((ticket: string) => {
+            this._webSocket = new WebSocket(`wss://localhost:44315/ws/WebSocketAdmin/?webSocketTicket=${ticket}`);
+            this._webSocket.onopen = (): void => this.open();
+            this._webSocket.onerror = (er:Event): void => {
+                this.reconnect();
+                console.log(er);
+            };
 
-        this._webSocket.onclose = (): void => this.close();
+            this._webSocket.onclose = (): void => this.close();
+        });
     }
 
     private reconnect(): void {

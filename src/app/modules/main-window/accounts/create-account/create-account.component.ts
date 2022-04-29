@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ChangeModeParam } from "./change-mode-param.enum";
 import { FormGroup } from "@angular/forms";
-import { FormControlExtension } from "../../../../view-models/form-validation/form-control-extension";
 import { FormControlsExtensionModel } from "../../../../view-models/form-validation/form-controls-extension-model";
+import { WSUserController } from "../../../../services/web-socket/controllers/web-socket-user-controller.service";
+import { IUserLocked } from "../../../../models/user-model-locked.interface";
+import { UserRole } from "../../../../services/permission/all-users-role.enum";
 
 @Component({
     selector: 'app-create-account',
@@ -19,7 +21,7 @@ export class CreateAccountComponent implements OnInit {
     public formControlsExtension: FormControlsExtensionModel = new FormControlsExtensionModel();
     public form: FormGroup = new FormGroup(this.formControlsExtension.getFormControlExtensionsDict());
 
-    constructor() {
+    constructor(private _wsUserController: WSUserController) {
     }
 
     ngOnInit(): void {
@@ -27,5 +29,19 @@ export class CreateAccountComponent implements OnInit {
 
     public changeMode(): void {
         this.isAddUserMode = !this.isAddUserMode;
+    }
+
+    //TODO добавить остальные роли
+    public addUser(): void{
+        const user: Partial<IUserLocked> = {};
+        user.login = this.formControlsExtension.login.value;
+        user.password = this.formControlsExtension.password.value;
+        user.firstName = this.formControlsExtension.firstName.value;
+        user.secondName = this.formControlsExtension.secondName.value;
+        user.role = UserRole.CLIENT;
+
+        this._wsUserController.addUser(user as IUserLocked);
+        this.form.reset();
+        this.changeMode();
     }
 }

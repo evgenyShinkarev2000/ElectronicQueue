@@ -47,17 +47,6 @@ export class SubmitButtonComponent {
                 console.log(error);
             });
 
-            // const result = await this._authService.logIn({
-            //     login: this.authForm.value[this.validService.login.name],
-            //     password: this.authForm.value[this.validService.password.name]
-            // });
-            //
-            // if (result){
-            //     this._router.navigate(["main_window"]);
-            // } else{
-            //     alert("Неверный логин или пароль");
-            // }
-
         } else if (this.formState === FormStates.signUp) {
             this._authService.signUp({
                 login: this.authForm.value[this.validService.login.name],

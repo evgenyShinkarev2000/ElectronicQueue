@@ -49,7 +49,7 @@
       <button class="btn remove-btn" (click)="removeUser()"></button>
     </div>
     <div class="control-buttons" *ngIf="itemLockState === ItemLockState.editedByMe">
-      <button class="btn approve-btn" (click)="saveChanges()"></button>
+      <button class="btn approve-btn" (click)="saveChanges()" [disabled]="form.invalid"></button>
       <button class="btn cancel-btn" (click)="undoChanges()"></button>
     </div>
   </div>

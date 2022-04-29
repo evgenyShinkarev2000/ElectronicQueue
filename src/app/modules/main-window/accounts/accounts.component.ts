@@ -38,6 +38,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         [UserRole.CLIENT]: { name: "Клиенты", selected: true }
     };
     private _allUsers: ILockItemViewModel[] = [];
+    private readonly _subscriptions: Subscription[] = [];
     private _itemLockUpdateSubscription: Subscription;
     private _connectionStateSubscription: Subscription;
 
@@ -45,28 +46,47 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this._itemLockUpdateSubscription = this._wsUserController.updateLock$.subscribe((itemToUpdateLock: IItemLockModel) => {
-            let index: number = this._allUsers.findIndex((item: ILockItemViewModel) => item.id === itemToUpdateLock.itemId);
-            if (index < 0) {
-                return;
-            }
-            this._allUsers[index].lockState = itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;
-            index = this.viewUsers.findIndex((item: ILockItemViewModel) => item.id === itemToUpdateLock.itemId);
-            if (index < 0) {
-                return;
-            }
-            this.viewUsers[index].lockState = itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;
-
-        });
+        this._subscriptions.push(
+            this._wsUserController.updateLock$.subscribe((itemToUpdateLock: IItemLockModel) => {
+                let index: number = this._allUsers.findIndex((item: ILockItemViewModel) => item.id === itemToUpdateLock.itemId);
+                if (index < 0) {
+                    return;
+                }
+                this._allUsers[index].lockState = itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;
+                index = this.viewUsers.findIndex((item: ILockItemViewModel) => item.id === itemToUpdateLock.itemId);
+                if (index < 0) {
+                    return;
+                }
+                this.viewUsers[index].lockState = itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;
+            })
+        );
         this.hasConnection = this._wsUserController.checkConnection();
-        this._connectionStateSubscription = this._wsUserController.connectionState$.subscribe((connectionState: boolean) => {
+        this._subscriptions.push(this._wsUserController.connectionState$.subscribe((connectionState: boolean) => {
             this.hasConnection = connectionState;
-        });
+        }));
+        this._subscriptions.push(this._wsUserController.updateUser$.subscribe((user: IUserLocked) => {
+            let index: number = this._allUsers.findIndex((item: ILockItemViewModel) => item.id === user.id);
+            if (index >= 0) {
+                this._allUsers[index].item = user;
+            }
+            index = this.viewUsers.findIndex((item: ILockItemViewModel) => item.id === user.id);
+            if (index >= 0) {
+                this.viewUsers[index].item = user;
+            }
+        }));
+        this._subscriptions.push(this._wsUserController.deleteUser$.subscribe((user: IUser) => {
+            this._allUsers = this._allUsers.filter((item: ILockItemViewModel) => item.id !== user.id);
+            this.viewUsers = this._allUsers.filter((item: ILockItemViewModel) => item.id !== user.id);
+        }));
+
+        this._subscriptions.push(this._wsUserController.addUser$.subscribe((user: IUser) => {
+            this._allUsers.push({ lockState: ItemLockState.free, item: user, id: user.id });
+            this.applyFilterAndSort();
+        }));
     }
 
     public ngOnDestroy(): void {
-        this._itemLockUpdateSubscription.unsubscribe();
-        this._connectionStateSubscription.unsubscribe();
+        this._subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
     }
 
     public loadUsers(): void {
