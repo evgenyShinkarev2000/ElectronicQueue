@@ -1,0 +1,23 @@
+section{
+  display: flex;
+  flex-direction: column;
+  align-content: flex-start;
+  .form-control-block{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 0.25rem 0;
+    margin-bottom: 0.25rem;
+    .form-control-info{
+      flex-basis: 30%;
+      margin-right: 1rem;
+    }
+    .radio-span{
+      margin-right: 1rem;
+    }
+    .radio-marker{
+      margin-right: 0.5rem;
+    }
+  }
+}
+

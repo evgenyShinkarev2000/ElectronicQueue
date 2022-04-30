@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { JwtModule } from "@auth0/angular-jwt";
 import { NgxPermissionsModule } from "ngx-permissions";
-import { LocalStorageService } from "./services/local-starage/local-storage.service";
+import { LocalStorageService } from "./services/local-storage/local-storage.service";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpErrorInterceptor } from "./providers/http-error-interceptor";
 

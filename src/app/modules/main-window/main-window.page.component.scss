@@ -5,6 +5,7 @@ header {
     }
 
     ul.navbar-right-block {
+      flex-wrap: wrap;
       li {
         height: fit-content;
         margin-left: 2rem;

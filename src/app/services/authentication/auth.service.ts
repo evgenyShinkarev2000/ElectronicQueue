@@ -6,7 +6,7 @@ import { CanActivate, Router } from "@angular/router";
 import { IUserLoginData } from "../../models/user-login-data.interface";
 import { IUserAuthData } from "../../models/user-auth-data.interface";
 import { IUserSignupData } from "../../models/user-signup-data.interface";
-import { LocalStorageService } from "../local-starage/local-storage.service";
+import { LocalStorageService } from "../local-storage/local-storage.service";
 import { MyPermissionService } from "../permission/my-permission.service";
 import { UserRole } from "../permission/all-users-role.enum";
 

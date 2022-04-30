@@ -1,0 +1,68 @@
+<section>
+  <div class="top-form">
+    <form>
+      <div class="form-control-block">
+        <span class="form-control-info">Название дня</span>
+        <input type="text">
+        <small></small>
+      </div>
+      <div class="form-control-block">
+        <span class="form-control-info">Начало приема</span>
+        <input type="time">
+        <small></small>
+      </div>
+    </form>
+  </div>
+
+  <div class="view-day">
+    <app-view-day></app-view-day>
+  </div>
+
+  <div class="middle-form">
+    <form [formGroup]="actionsForm">
+      <div class="form-control-block">
+        <span class="form-control-info">Продолжительность события</span>
+        <input type="time" formControlName="duration">
+        <small *ngIf="actionsForm.get('duration').invalid">Значение должно быть не менее минуты</small>
+      </div>
+      <div class="form-control-block" *ngIf="radioValue === 'reception'">
+        <span class="form-control-info">Количество</span>
+        <input type="number" formControlName="count">
+        <small *ngIf="actionsForm.get('count').invalid">Нужно указать целое число более 0</small>
+      </div>
+      <div class="form-control-block">
+        <span class="form-control-info">Тип записи</span>
+        <label>
+          <input class="radio-marker" type="radio" name="record-type" value="reception" id="radio-record-type-reception"
+                 [(ngModel)]="radioValue"
+                 [checked]="radioValue === 'reception'"
+                 [ngModelOptions]="{standalone: true}">
+          <span class="radio-span">Прием</span>
+        </label>
+        <label>
+          <input class="radio-marker" type="radio" name="record-type" value="rest" id="radio-record-type-rest"
+                 [(ngModel)]="radioValue"
+                 [checked]="radioValue === 'rest'"
+                 [ngModelOptions]="{standalone: true}">
+          <span class="radio-span">Отдых</span>
+        </label>
+      </div>
+    </form>
+    <div class="form-control-block">
+      <button class="btn btn-outline-primary">Добавить событие</button>
+    </div>
+  </div>
+
+  <div class="bottom-form">
+    <form>
+      <div class="form-control-block">
+        <span class="form-control-info">Конец приема</span>
+        <input type="time" id="reception-end">
+        <small></small>
+      </div>
+    </form>
+    <div class="form-control-block">
+      <button class="btn btn-primary">Сохранить шаблон</button>
+    </div>
+  </div>
+</section>

@@ -11,6 +11,9 @@ import { FormsModule, NgModel, ReactiveFormsModule } from "@angular/forms";
 import { AccountItemComponent } from './accounts/account-item/account-item.component';
 import { CreateAccountComponent } from './accounts/create-account/create-account.component';
 import { NewUserFormComponent } from "../../shared-components/new-user-form/new-user-form.component";
+import { CreateQueueComponent } from './queues/create-queue/create-queue.component';
+import { AllQueueComponent } from './queues/all-queue/all-queue.component';
+import { MyQueueComponent } from './queues/my-queue/my-queue.component';
 
 
 @NgModule({
@@ -21,7 +24,7 @@ import { NewUserFormComponent } from "../../shared-components/new-user-form/new-
         PersonalAccountComponent,
         AccountItemComponent,
         CreateAccountComponent,
-        NewUserFormComponent
+        NewUserFormComponent,
     ],
     imports: [
         CommonModule,

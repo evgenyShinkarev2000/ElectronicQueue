@@ -1,1 +1,12 @@
-<p>queues works!</p>
+<div class="sub-header">
+  <div class="sub-header-item" *ngxPermissionsOnly="[UserRole.ADMIN, UserRole.OPERATOR]">
+    <a [routerLink]="'create'" routerLinkActive="active">Создать очередь</a>
+  </div>
+  <div class="sub-header-item" *ngxPermissionsOnly="UserRole.ADMIN">
+    <a [routerLink]="'all'" routerLinkActive="active">Все очереди</a>
+  </div>
+  <div class="sub-header-item" *ngxPermissionsOnly="[UserRole.ADMIN, UserRole.OPERATOR]">
+    <a [routerLink]="'my'" routerLinkActive="active">Мои очереди</a>
+  </div>
+</div>
+<router-outlet></router-outlet>
