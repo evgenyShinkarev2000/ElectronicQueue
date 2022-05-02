@@ -1,1 +1,5 @@
-<p>view-day works!</p>
+<div *ngFor="let record of day.records; let i = index">
+  <div>
+    <app-record-pattern [recordPattern]="record" [index]="i" (removeRecord)="onRemoveRecord($event)"></app-record-pattern>
+  </div>
+</div>

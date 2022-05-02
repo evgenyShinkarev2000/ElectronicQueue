@@ -5,7 +5,7 @@ export class CustomValidators {
         return (control: AbstractControl): ValidationErrors | null => {
             const timeStr: string = control.value;
             if (!timeStr){
-                return null;
+                return { forbiddenName: { value: control.value } };
             }
             const timeTokens: string[] = timeStr.split(":");
             const hours: number = parseInt(timeTokens[0]);

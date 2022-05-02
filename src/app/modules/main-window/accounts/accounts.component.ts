@@ -3,7 +3,7 @@ import { UserRole } from "../../../services/permission/all-users-role.enum";
 import { IUserLocked } from "../../../models/user-model-locked.interface";
 import { WSUserController } from "../../../services/web-socket/controllers/web-socket-user-controller.service";
 import { IItemLockModel } from "../../../models/websocket-lock-item.interface";
-import { Subscription } from "rxjs";
+import { Subscription, take } from "rxjs";
 import { ILockItemViewModel } from "../../../view-models/lock-item-model.interface";
 import { ItemLockState } from "../../../view-models/lock-item-state.enum";
 import { IUser } from "../../../models/user-model.interface";
@@ -90,19 +90,21 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
 
     public loadUsers(): void {
-        this._wsUserController.getAllUser().subscribe((users: IUserLocked[]) => {
-            const items: ILockItemViewModel[] = users.map((user: IUserLocked) => {
-                const item: ILockItemViewModel = {
-                    item: user as IUser,
-                    id: user.id,
-                    lockState: user.lockStatus === "Free" ? ItemLockState.free : ItemLockState.lock
-                };
+        this._wsUserController.getAllUser()
+            .pipe(take(1))
+            .subscribe((users: IUserLocked[]) => {
+                const items: ILockItemViewModel[] = users.map((user: IUserLocked) => {
+                    const item: ILockItemViewModel = {
+                        item: user as IUser,
+                        id: user.id,
+                        lockState: user.lockStatus === "Free" ? ItemLockState.free : ItemLockState.lock
+                    };
 
-                return item;
+                    return item;
+                });
+                this._allUsers = items;
+                this.applyFilterAndSort();
             });
-            this._allUsers = this._allUsers.concat(items);
-            this.applyFilterAndSort();
-        });
     }
 
     public changeFilterMode(userRole: UserRole): void {

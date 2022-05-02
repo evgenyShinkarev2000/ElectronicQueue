@@ -8,6 +8,7 @@ import { QueuesRoutingModule } from "./queues-routing.module";
 import { CreateDayComponent } from './create-queue/create-day/create-day.component';
 import { ViewDayComponent } from './create-queue/view-day/view-day.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { RecordPatternComponent } from './create-queue/record-pattern/record-pattern.component';
 
 @NgModule({
     declarations: [
@@ -15,7 +16,8 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
         AllQueueComponent,
         MyQueueComponent,
         CreateDayComponent,
-        ViewDayComponent
+        ViewDayComponent,
+        RecordPatternComponent
     ],
     imports: [
         CommonModule,

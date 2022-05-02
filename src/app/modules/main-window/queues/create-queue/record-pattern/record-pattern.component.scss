@@ -1,0 +1,17 @@
+.record-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  span {
+    margin-right: 1rem;
+  }
+
+  .remove {
+    background-image: url("/assets/img/trash.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: inline-block;
+  }
+}

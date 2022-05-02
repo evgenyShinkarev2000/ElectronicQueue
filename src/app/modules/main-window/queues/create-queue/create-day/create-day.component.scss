@@ -6,6 +6,7 @@ section{
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+    align-items: center;
     padding: 0.25rem 0;
     margin-bottom: 0.25rem;
     .form-control-info{
@@ -17,6 +18,9 @@ section{
     }
     .radio-marker{
       margin-right: 0.5rem;
+    }
+    small.text-danger{
+      margin-left: 1rem;
     }
   }
 }

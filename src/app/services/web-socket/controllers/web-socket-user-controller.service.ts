@@ -55,7 +55,7 @@ export class WSUserController extends WebSocketControllerAbstract {
     public getAllUser(): Observable<IUserLocked[]> {
         this._webSocketService.send({ serverData: null, serverInstructions: ["getAllUsers"] });
 
-        return this._allUsers$.asObservable();
+        return this._allUsers$;
     }
 
     public deleteUser(user: IUser): void {
