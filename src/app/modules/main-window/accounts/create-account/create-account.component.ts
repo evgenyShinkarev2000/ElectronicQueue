@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ChangeModeParam } from "./change-mode-param.enum";
 import { FormGroup } from "@angular/forms";
 import { FormControlsExtensionModel } from "../../../../view-models/form-validation/form-controls-extension-model";
-import { WSUserProvider } from "../../../../services/web-socket/controllers/ws-user/ws-user-controller.service";
+import { WSUserController } from "../../../../services/web-socket/controllers/ws-user/ws-user-controller.service";
 import { IUserLocked } from "../../../../models/user-model-locked.interface";
 import { UserRole } from "../../../../services/permission/all-users-role.enum";
+import { IWSUserEndPoints } from "../../../../services/web-socket/controllers/ws-user/user-socket-service.interface";
 
 @Component({
     selector: 'app-create-account',
     templateUrl: './create-account.component.html',
     styleUrls: ['./create-account.component.scss']
 })
-export class CreateAccountComponent implements OnInit {
+export class CreateAccountComponent implements OnInit, OnDestroy {
 
     public isAddUserMode: boolean = false;
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -20,12 +21,19 @@ export class CreateAccountComponent implements OnInit {
     public unusedModeOnClickId: string = "unusedModeOnClickId";
     public formControlsExtension: FormControlsExtensionModel = new FormControlsExtensionModel();
     public form: FormGroup = new FormGroup(this.formControlsExtension.getFormControlExtensionsDict());
+    private _wsUserEndPoints: IWSUserEndPoints;
 
-    constructor(private _wsUserController: WSUserProvider) {
+    constructor(private _wsUserController: WSUserController) {
+        this._wsUserEndPoints = _wsUserController.getWSUserEndPoints();
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
     }
+
+    public ngOnDestroy(): void {
+        this._wsUserController.removeUserSocketService();
+    }
+
 
     public changeMode(): void {
         this.isAddUserMode = !this.isAddUserMode;
@@ -40,7 +48,8 @@ export class CreateAccountComponent implements OnInit {
         user.secondName = this.formControlsExtension.secondName.value;
         user.role = UserRole.CLIENT;
 
-        this._wsUserController.addUser(user as IUserLocked);
+        // this._wsUserController.addUser(user as IUserLocked);
+        this._wsUserEndPoints.user.post(user as IUserLocked);
         this.form.reset();
         this.changeMode();
     }

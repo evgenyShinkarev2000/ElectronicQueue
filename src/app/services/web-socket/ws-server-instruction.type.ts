@@ -1,1 +1,1 @@
-export type WsServerInstruction = "post" | "get" | "update" | "delete";
+export type WSServerInstruction = "post" | "get" | "update" | "delete";

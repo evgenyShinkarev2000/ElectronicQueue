@@ -6,19 +6,11 @@ import { map, Observable } from "rxjs";
 @Injectable({
     providedIn: 'root'
 })
-export class WSMainController {
-    public get listenMessage$(): Observable<IWSMessageToClient> {
-        return this._webSocketService.listenMessage$.pipe(map((jsonString: string) => {
-            return this.handleServerJsonMessage(jsonString);
-        }));
-    }
-
-    constructor(private _webSocketService: WebSocketProvider) {
+export class WSParser {
+    constructor() {
 
     }
-
-
-    private handleServerJsonMessage(jsonString: string): IWSMessageToClient {
+    public parse(jsonString: string): IWSMessageToClient {
         const messageToClient: IWSMessageToClient = JSON.parse(jsonString);
         if (!messageToClient?.clientInstructions
             || typeof messageToClient.clientInstructions !== typeof []

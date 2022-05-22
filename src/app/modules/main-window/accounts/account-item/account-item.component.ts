@@ -1,19 +1,20 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { AuthService } from "../../../../services/authentication/auth.service";
-import { WSUserProvider } from "../../../../services/web-socket/controllers/ws-user/ws-user-controller.service";
+import { WSUserController } from "../../../../services/web-socket/controllers/ws-user/ws-user-controller.service";
 import { ItemLockState } from "../../../../view-models/lock-item-state.enum";
 import { IUser } from "../../../../models/user-model.interface";
 import { FormGroup } from "@angular/forms";
 import { FormControlsExtensionModel } from "../../../../view-models/form-validation/form-controls-extension-model";
 import { ItemMode } from "./item-mode.enum";
 import { Observable } from "rxjs";
+import { IWSUserEndPoints } from "../../../../services/web-socket/controllers/ws-user/user-socket-service.interface";
 
 @Component({
     selector: 'app-account-item',
     templateUrl: './account-item.component.html',
     styleUrls: ['./new-account-item.component.scss']
 })
-export class AccountItemComponent implements OnInit {
+export class AccountItemComponent implements OnInit, OnDestroy {
     @Input()
     public itemLockState: ItemLockState;
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -42,19 +43,26 @@ export class AccountItemComponent implements OnInit {
         return this.itemLockState === ItemLockState.lock;
     }
 
+    private _wsUserEndPoints: IWSUserEndPoints;
 
-    constructor(private _wsUserController: WSUserProvider, private _authService: AuthService) {
+    constructor(private _wsUserController: WSUserController, private _authService: AuthService) {
         this.form = new FormGroup({
             [this.formControlsExtension.login.name]: this.formControlsExtension.login,
             [this.formControlsExtension.password.name]: this.formControlsExtension.password,
             [this.formControlsExtension.firstName.name]: this.formControlsExtension.firstName,
             [this.formControlsExtension.secondName.name]: this.formControlsExtension.secondName
         });
+
+        this._wsUserEndPoints = _wsUserController.getWSUserEndPoints();
     }
 
     public ngOnInit(): void {
         this.setBeginInputs();
         this.disableInputs();
+    }
+
+    public ngOnDestroy(): void {
+        this._wsUserController.removeUserSocketService();
     }
 
     public changeExtend(): void {
@@ -81,10 +89,11 @@ export class AccountItemComponent implements OnInit {
             updatedUser.password = this.formControlsExtension.password.value;
             updatedUser.firstName = this.formControlsExtension.firstName.value;
             updatedUser.secondName = this.formControlsExtension.secondName.value;
-            this._wsUserController.updateUser(updatedUser);
-        }
-        else if (this.itemMode === ItemMode.remove){
-            this._wsUserController.deleteUser(this.user);
+            // this._wsUserController.updateUser(updatedUser);
+            this._wsUserEndPoints.user.update(updatedUser);
+        } else if (this.itemMode === ItemMode.remove) {
+            // this._wsUserController.deleteUser(this.user);
+            this._wsUserEndPoints.user.delete(this.user);
         }
         this.deleteEditRight();
     }
@@ -106,7 +115,12 @@ export class AccountItemComponent implements OnInit {
         this.itemLockState = ItemLockState.free;
         this.disableInputs();
         this.itemMode = ItemMode.unused;
-        this._wsUserController.deleteEditRight({
+        // this._wsUserController.deleteEditRight({
+        //     itemId: this.user.id,
+        //     status: null,
+        //     userId: null
+        // });
+        this._wsUserEndPoints.editRight.delete({
             itemId: this.user.id,
             status: null,
             userId: null
@@ -116,7 +130,12 @@ export class AccountItemComponent implements OnInit {
     }
 
     private tryGetEditRight(): Observable<boolean> {
-        const response$: Observable<boolean> = this._wsUserController.tryGetEditRight({
+        // const response$: Observable<boolean> = this._wsUserController.tryGetEditRight({
+        //     itemId: this.user.id,
+        //     userId: null,
+        //     status: null
+        // });
+        const response$: Observable<boolean> = this._wsUserEndPoints.editRight.tryGet({
             itemId: this.user.id,
             userId: null,
             status: null

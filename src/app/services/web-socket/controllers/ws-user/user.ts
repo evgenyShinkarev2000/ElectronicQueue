@@ -3,14 +3,14 @@ import { IUserLocked } from "../../../../models/user-model-locked.interface";
 import { IWSMessageToClient } from "../../web-socket-message-to-client.interface";
 import { IUser } from "../../../../models/user-model.interface";
 import { WSEndPointAbstract } from "../end-point-abstract";
-import { WsServerInstruction } from "../../ws-server-instruction.type";
+import { WSServerInstruction } from "../../ws-server-instruction.type";
 
 export class WSUserEndPoint extends WSEndPointAbstract{
-    public override update$: Subject<IUserLocked> = super.update$;
-    public override delete$: Subject<IUserLocked> = super.delete$;
-    public override post$: Subject<IUserLocked> = super.post$;
+    public override update$: Subject<IUserLocked>;
+    public override delete$: Subject<IUserLocked>;
+    public override post$: Subject<IUserLocked>;
 
-    constructor(send: (x: WsServerInstruction, y: any) => any, messageToClient$: Subject<IWSMessageToClient>){
+    constructor(send: (x: WSServerInstruction, y: any) => any, messageToClient$: Subject<IWSMessageToClient>){
         super(send, messageToClient$);
     }
 

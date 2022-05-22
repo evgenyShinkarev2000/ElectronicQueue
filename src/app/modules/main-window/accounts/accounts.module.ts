@@ -9,7 +9,7 @@ import { CommonModule } from "@angular/common";
 import { QueuesRoutingModule } from "../queues/queues-routing.module";
 import { NgxPermissionsModule } from "ngx-permissions";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { WSUserProvider } from "../../../services/web-socket/controllers/ws-user/ws-user-controller.service";
+import { WSUserController } from "../../../services/web-socket/controllers/ws-user/ws-user-controller.service";
 import { AccountsComponent } from "./accounts.component";
 import { CreateAccountComponent } from "./create-account/create-account.component";
 import { AccountItemComponent } from "./account-item/account-item.component";

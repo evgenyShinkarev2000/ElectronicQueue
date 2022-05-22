@@ -1,19 +1,22 @@
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { WebSocketProvider } from "../web-socket.service";
 import { inject } from "@angular/core";
+import { IWSMessageToClient } from "../web-socket-message-to-client.interface";
 
-export class WebSocketControllerAbstract {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    protected _webSocketProvider: WebSocketProvider = inject(WebSocketProvider);
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    constructor() {
+export abstract class WebSocketControllerAbstract {
+
+    constructor(protected webSocketProvider: WebSocketProvider) {
     }
 
     public get connectionState$(): Observable<boolean> {
-        return this._webSocketProvider.listenConnectionState$();
+        return this.webSocketProvider.listenConnectionState$();
     }
 
     public checkConnection(): boolean {
-        return this._webSocketProvider.checkConnection();
+        return this.webSocketProvider.checkConnection();
+    }
+
+    protected changeEmitter(s: Subject<any>): Function{
+        return (wsMessageToClient: IWSMessageToClient) => s.next(wsMessageToClient.clientData);
     }
 }

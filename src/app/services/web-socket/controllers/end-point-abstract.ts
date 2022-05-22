@@ -1,4 +1,4 @@
-import { WsServerInstruction } from "../ws-server-instruction.type";
+import { WSServerInstruction } from "../ws-server-instruction.type";
 import { WSClientInstruction } from "../ws-client-instruction.type";
 import { Subject } from "rxjs";
 import { IWSMessageToClient } from "../web-socket-message-to-client.interface";
@@ -17,12 +17,20 @@ export abstract class WSEndPointAbstract{
     };
 
     protected constructor(
-        private _send: (x: WsServerInstruction, y?: any) => any,
+        private _send: (instruction: WSServerInstruction, data?: any) => any,
         private _messageToClient$: Subject<IWSMessageToClient>) {
         _messageToClient$.subscribe((next: IWSMessageToClient) => {
             this._methodSelector[next.clientInstructions.pop() as WSClientInstruction](next.clientData);
         });
     }
+
+    public stopAllStream(): void{
+        this.post$.complete();
+        this.get$.complete();
+        this.update$.complete();
+        this.delete$.complete();
+    }
+
     protected delete(data?: any): any{
         return this._send("delete", data);
     }

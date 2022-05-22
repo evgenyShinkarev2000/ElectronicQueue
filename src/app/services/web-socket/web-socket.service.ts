@@ -18,6 +18,10 @@ export class WebSocketProvider {
         this.connect();
     }
 
+    public disconnect(): void{
+        this._webSocket.close();
+    }
+
     public connectTo(uri: string): void{
         this.connect(uri);
     }
