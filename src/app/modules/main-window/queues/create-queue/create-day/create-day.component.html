@@ -60,7 +60,7 @@
       <span [class.text-danger]="findEndTime().length > 5">{{findEndTime()}}</span>
     </div>
     <div class="form-control-block">
-      <button class="btn btn-primary" [disabled]="infoForm.invalid">Сохранить шаблон</button>
+      <button class="btn btn-primary" [disabled]="infoForm.invalid" (click)="saveDay()">Сохранить шаблон</button>
     </div>
   </div>
 </section>

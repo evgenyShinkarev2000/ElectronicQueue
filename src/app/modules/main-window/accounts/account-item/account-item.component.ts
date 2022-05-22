@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AuthService } from "../../../../services/authentication/auth.service";
-import { WSUserController } from "../../../../services/web-socket/controllers/web-socket-user-controller.service";
+import { WSUserProvider } from "../../../../services/web-socket/controllers/ws-user/ws-user-controller.service";
 import { ItemLockState } from "../../../../view-models/lock-item-state.enum";
 import { IUser } from "../../../../models/user-model.interface";
 import { FormGroup } from "@angular/forms";
@@ -43,7 +43,7 @@ export class AccountItemComponent implements OnInit {
     }
 
 
-    constructor(private _wsUserController: WSUserController, private _authService: AuthService) {
+    constructor(private _wsUserController: WSUserProvider, private _authService: AuthService) {
         this.form = new FormGroup({
             [this.formControlsExtension.login.name]: this.formControlsExtension.login,
             [this.formControlsExtension.password.name]: this.formControlsExtension.password,

@@ -1,5 +1,5 @@
 import { EQRecordType } from "./EQRecordType";
-import { TimeOnly } from "./TimeOnly,ts";
+import { TimeOnly } from "./TimeOnly";
 
 export class EQRecordPattern {
     public beginTime: TimeOnly;
@@ -18,5 +18,13 @@ export class EQRecordPattern {
         this.beginTime = beginTime;
         this.endTime = endTime;
         this.type = type;
+    }
+
+    public toDTO(): object{
+        return {
+            "beginTimeMinutes": this.beginTime.toDTO(),
+            "endTimeMinutes": this.endTime.toDTO(),
+            "type": this.type
+        };
     }
 }

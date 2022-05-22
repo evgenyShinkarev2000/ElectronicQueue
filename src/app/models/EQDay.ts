@@ -1,7 +1,8 @@
 import { EQRecordPattern } from "./EQueueRecordPattern";
-import { TimeOnly } from "./TimeOnly,ts";
+import { TimeOnly } from "./TimeOnly";
 
 export class EQDay {
+    public name: string = "";
     private _records: EQRecordPattern[] = [];
     public get records(): Readonly<EQRecordPattern[]> {
         return this._records;
@@ -86,6 +87,14 @@ export class EQDay {
         }
 
         this._records.splice(recordIndex, 1);
+    }
+
+    public toDTO(): object{
+        return {
+            "name": this.name,
+            "records": this.records.map((record: EQRecordPattern) => record.toDTO()),
+            "beginTimeMinutes": this.beginTime.toDTO()
+        };
     }
 
 }

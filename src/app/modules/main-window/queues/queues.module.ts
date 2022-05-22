@@ -9,10 +9,12 @@ import { CreateDayComponent } from './create-queue/create-day/create-day.compone
 import { ViewDayComponent } from './create-queue/view-day/view-day.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RecordPatternComponent } from './create-queue/record-pattern/record-pattern.component';
+import { QueuesComponent } from "./queues.component";
 
 @NgModule({
     declarations: [
         CreateQueueComponent,
+        QueuesComponent,
         AllQueueComponent,
         MyQueueComponent,
         CreateDayComponent,

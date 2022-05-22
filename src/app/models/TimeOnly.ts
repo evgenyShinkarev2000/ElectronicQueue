@@ -70,4 +70,9 @@ export class TimeOnly {
     public getCopy(): TimeOnly {
         return new TimeOnly(null, this.hours, this.minutes);
     }
+
+    public toDTO(): number {
+        return this.toMinutes();
+    }
+
 }

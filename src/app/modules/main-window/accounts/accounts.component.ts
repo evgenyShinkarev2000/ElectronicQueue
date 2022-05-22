@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserRole } from "../../../services/permission/all-users-role.enum";
 import { IUserLocked } from "../../../models/user-model-locked.interface";
-import { WSUserController } from "../../../services/web-socket/controllers/web-socket-user-controller.service";
+import { WSUserProvider } from "../../../services/web-socket/controllers/ws-user/ws-user-controller.service";
 import { IItemLockModel } from "../../../models/websocket-lock-item.interface";
 import { Subscription, take } from "rxjs";
 import { ILockItemViewModel } from "../../../view-models/lock-item-model.interface";
@@ -42,7 +42,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     private _itemLockUpdateSubscription: Subscription;
     private _connectionStateSubscription: Subscription;
 
-    constructor(private _wsUserController: WSUserController) {
+    constructor(private _wsUserController: WSUserProvider) {
     }
 
     public ngOnInit(): void {

@@ -14,17 +14,13 @@ import { NewUserFormComponent } from "../../shared-components/new-user-form/new-
 import { CreateQueueComponent } from './queues/create-queue/create-queue.component';
 import { AllQueueComponent } from './queues/all-queue/all-queue.component';
 import { MyQueueComponent } from './queues/my-queue/my-queue.component';
+import { WSUserProvider } from "../../services/web-socket/controllers/ws-user/ws-user-controller.service";
 
 
 @NgModule({
     declarations: [
         MainWindowComponent,
-        AccountsComponent,
-        QueuesComponent,
-        PersonalAccountComponent,
-        AccountItemComponent,
-        CreateAccountComponent,
-        NewUserFormComponent,
+        PersonalAccountComponent
     ],
     imports: [
         CommonModule,

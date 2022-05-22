@@ -7,14 +7,4 @@ import { Observable } from "rxjs";
     providedIn: 'root'
 })
 export class WSQueueController extends WebSocketControllerAbstract{
-    get checkConnection(): boolean {
-        throw new Error("not implement yet");
-    }
-
-    get connectionState$(): Observable<boolean> {
-        throw new Error("not implement yet");
-    }
-    protected handleServerMessage(wsMessageToClient: IWSMessageToClient): void {
-        throw new Error("not implement yet");
-    }
 }

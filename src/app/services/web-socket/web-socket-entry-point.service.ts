@@ -1,5 +1,5 @@
 import { IWSMessageToClient } from "./web-socket-message-to-client.interface";
-import { WebSocketService } from "./web-socket.service";
+import { WebSocketProvider } from "./web-socket.service";
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 
@@ -13,7 +13,7 @@ export class WSMainController {
         }));
     }
 
-    constructor(private _webSocketService: WebSocketService) {
+    constructor(private _webSocketService: WebSocketProvider) {
 
     }
 

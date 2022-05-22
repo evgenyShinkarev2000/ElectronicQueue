@@ -4,10 +4,8 @@ import { Observable, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../authentication/auth.service";
 
-@Injectable({
-    providedIn: 'root'
-})
-export class WebSocketService {
+@Injectable()
+export class WebSocketProvider {
     private readonly _connectionState$: Subject<boolean> = new Subject<boolean>();
     private readonly _message$: Subject<string> = new Subject<string>();
     private _webSocket: WebSocket;
@@ -18,6 +16,10 @@ export class WebSocketService {
 
     constructor(private _httpClient: HttpClient, private _authService: AuthService) {
         this.connect();
+    }
+
+    public connectTo(uri: string): void{
+        this.connect(uri);
     }
 
     public get listenMessage$(): Observable<string>{
@@ -44,9 +46,9 @@ export class WebSocketService {
         this._webSocket.send(jsonString);
     }
 
-    private connect(): void {
+    private connect(uri: string = "WebSocketAdmin/?webSocketTicket="): void {
         this._authService.getWebSocketTicket().subscribe((ticket: string) => {
-            this._webSocket = new WebSocket(`wss://localhost:44315/ws/WebSocketAdmin/?webSocketTicket=${ticket}`);
+            this._webSocket = new WebSocket(`wss://localhost:44315/ws/${uri}${ticket}`);
             this._webSocket.onopen = (): void => this.open();
             this._webSocket.onerror = (er:Event): void => {
                 this.reconnect();

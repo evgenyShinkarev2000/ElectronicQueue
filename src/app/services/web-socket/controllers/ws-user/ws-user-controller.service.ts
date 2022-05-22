@@ -1,17 +1,17 @@
-import { WebSocketControllerAbstract } from "./web-socket-controller.abstract";
-import { IWSMessageToClient } from "../web-socket-message-to-client.interface";
+import { WebSocketControllerAbstract } from "../web-socket-controller.abstract";
+import { IWSMessageToClient } from "../../web-socket-message-to-client.interface";
 import { Injectable } from "@angular/core";
-import { WebSocketService } from "../web-socket.service";
+import { WebSocketProvider } from "../../web-socket.service";
 import { Observable, Subject, take } from "rxjs";
-import { IUserLocked } from "../../../models/user-model-locked.interface";
-import { WSMainController } from "../web-socket-entry-point.service";
-import { IItemLockModel } from "../../../models/websocket-lock-item.interface";
-import { IUser } from "../../../models/user-model.interface";
+import { IUserLocked } from "../../../../models/user-model-locked.interface";
+import { WSMainController } from "../../web-socket-entry-point.service";
+import { IItemLockModel } from "../../../../models/websocket-lock-item.interface";
+import { IUser } from "../../../../models/user-model.interface";
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: "root"
 })
-export class WSUserController extends WebSocketControllerAbstract {
+export class WSUserProvider extends WebSocketControllerAbstract {
     private _allUsers$: Subject<IUserLocked[]> = new Subject<IUserLocked[]>();
     private _canEdit$: Subject<boolean> = new Subject<boolean>();
     private _updateLock$: Subject<IItemLockModel> = new Subject<IItemLockModel>();
@@ -36,11 +36,7 @@ export class WSUserController extends WebSocketControllerAbstract {
         return this._updateLock$.asObservable();
     }
 
-    public override get connectionState$(): Observable<boolean> {
-        return this._webSocketService.listenConnectionState$();
-    }
-
-    constructor(private _webSocketService: WebSocketService, private _mainController: WSMainController) {
+    constructor(webSocketService: WebSocketProvider, private _mainController: WSMainController) {
         super();
         this.initEndPointSelector();
         this._mainController.listenMessage$.subscribe((wsMessageToClient: IWSMessageToClient) => {
@@ -48,37 +44,33 @@ export class WSUserController extends WebSocketControllerAbstract {
         });
     }
 
-    public override checkConnection(): boolean {
-        return this._webSocketService.checkConnection();
-    }
-
     public getAllUser(): Observable<IUserLocked[]> {
-        this._webSocketService.send({ serverData: null, serverInstructions: ["getAllUsers"] });
+        this._webSocketProvider.send({ serverData: null, serverInstructions: ["getAllUsers"] });
 
         return this._allUsers$;
     }
 
     public deleteUser(user: IUser): void {
-        this._webSocketService.send({ serverData: user, serverInstructions: ["deleteUser"] });
+        this._webSocketProvider.send({ serverData: user, serverInstructions: ["deleteUser"] });
     }
 
     public updateUser(user: IUser): void {
-        this._webSocketService.send({ serverData: user, serverInstructions: ["updateUser"] });
+        this._webSocketProvider.send({ serverData: user, serverInstructions: ["updateUser"] });
     }
 
     public addUser(user: IUser): void {
-        this._webSocketService.send({ serverData: user, serverInstructions: ["addUser"] });
+        this._webSocketProvider.send({ serverData: user, serverInstructions: ["addUser"] });
     }
 
     public deleteEditRight(lockedItem: IItemLockModel): void {
-        this._webSocketService.send({
+        this._webSocketProvider.send({
             serverData: lockedItem,
             serverInstructions: ["deleteEditRight"]
         });
     }
 
     public tryGetEditRight(itemToLock: IItemLockModel): Observable<boolean> {
-        this._webSocketService.send({
+        this._webSocketProvider.send({
             serverData: itemToLock,
             serverInstructions: ["getEditRight"]
         });
@@ -122,5 +114,19 @@ export class WSUserController extends WebSocketControllerAbstract {
             this._deleteUser$.next(wsMessageToClient.clientData);
         this._endPointsSelector["addUser"] = (wsMessageToClient: IWSMessageToClient): void =>
             this._addUser$.next(wsMessageToClient.clientData);
+    }
+
+    private send(serverInstructions: string[] | string, serverData: any, serverEntryPoint: string = "user"): void{
+        if (Array.isArray(serverInstructions)) {
+            this._webSocketProvider.send({
+                serverData: serverData,
+                serverInstructions: [serverEntryPoint, ...serverInstructions]
+            });
+        } else {
+            this._webSocketProvider.send({
+                serverData: serverData,
+                serverInstructions: [serverEntryPoint, serverInstructions]
+            });
+        }
     }
 }

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { InjectionToken, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -9,6 +9,7 @@ import { NgxPermissionsModule } from "ngx-permissions";
 import { LocalStorageService } from "./services/local-storage/local-storage.service";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpErrorInterceptor } from "./providers/http-error-interceptor";
+import { WebSocketProvider } from "./services/web-socket/web-socket.service";
 
 const components: any[] = [AppComponent];
 
@@ -19,7 +20,6 @@ const HTTP_ERROR_INTERCEPTOR = {
     useClass: HttpErrorInterceptor,
     multi: true,
 };
-
 
 @NgModule({
     declarations: components,
@@ -39,7 +39,7 @@ const HTTP_ERROR_INTERCEPTOR = {
         NgxPermissionsModule.forRoot(),
         NgbModule
     ],
-    providers: [HTTP_ERROR_INTERCEPTOR],
+    providers: [HTTP_ERROR_INTERCEPTOR, WebSocketProvider],
     bootstrap: [AppComponent]
 })
 export class AppModule {

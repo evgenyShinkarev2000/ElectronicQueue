@@ -5,7 +5,7 @@ import { CustomValidators } from "../../../../../models/CustomValidators";
 import { EQRecordType } from "../../../../../models/EQRecordType";
 import { EQRecordPattern } from "../../../../../models/EQueueRecordPattern";
 import { EQDay } from "../../../../../models/EQDay";
-import { TimeOnly } from "../../../../../models/TimeOnly,ts";
+import { TimeOnly } from "../../../../../models/TimeOnly";
 import { Observable, Subscription } from "rxjs";
 
 @Component({
@@ -82,6 +82,11 @@ export class CreateDayComponent implements OnInit {
             this.day.tryAddEnd(new EQRecordPattern(startTime, endTime, type));
             startTime = endTime.getCopy();
         }
+    }
+
+    public saveDay(): void{
+        this.day.name = this.infoForm.get("dayName").value;
+        console.log(this.day.toDTO());
     }
 
 

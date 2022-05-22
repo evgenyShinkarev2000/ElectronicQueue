@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ChangeModeParam } from "./change-mode-param.enum";
 import { FormGroup } from "@angular/forms";
 import { FormControlsExtensionModel } from "../../../../view-models/form-validation/form-controls-extension-model";
-import { WSUserController } from "../../../../services/web-socket/controllers/web-socket-user-controller.service";
+import { WSUserProvider } from "../../../../services/web-socket/controllers/ws-user/ws-user-controller.service";
 import { IUserLocked } from "../../../../models/user-model-locked.interface";
 import { UserRole } from "../../../../services/permission/all-users-role.enum";
 
@@ -21,7 +21,7 @@ export class CreateAccountComponent implements OnInit {
     public formControlsExtension: FormControlsExtensionModel = new FormControlsExtensionModel();
     public form: FormGroup = new FormGroup(this.formControlsExtension.getFormControlExtensionsDict());
 
-    constructor(private _wsUserController: WSUserController) {
+    constructor(private _wsUserController: WSUserProvider) {
     }
 
     ngOnInit(): void {

@@ -11,10 +11,11 @@ const routes: Routes = [
         component: MainWindowComponent,
         children: [
             {
-                path: "accounts", component: AccountsComponent
+                path: "accounts",
+                loadChildren: () => import("./accounts/accounts.module").then(m => m.AccountsModule)
             },
             {
-                path: "queues", component: QueuesComponent,
+                path: "queues",
                 loadChildren: () => import("./queues/queues.module").then(m => m.QueuesModule)
             },
             { path: "personal_account", component: PersonalAccountComponent }

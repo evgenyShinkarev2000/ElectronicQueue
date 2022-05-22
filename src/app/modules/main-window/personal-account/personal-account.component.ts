@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TestLifeTimeService } from "../../../services/test-life-time/test-life-time.service";
 
 @Component({
   selector: 'app-personal-account',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PersonalAccountComponent implements OnInit {
 
-  constructor() { }
+  constructor(test: TestLifeTimeService) { }
 
   ngOnInit(): void {
   }
