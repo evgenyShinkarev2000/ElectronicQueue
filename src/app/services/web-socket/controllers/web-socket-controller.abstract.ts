@@ -17,6 +17,6 @@ export abstract class WebSocketControllerAbstract {
     }
 
     protected changeEmitter(s: Subject<any>): Function{
-        return (wsMessageToClient: IWSMessageToClient) => s.next(wsMessageToClient.clientData);
+        return (wsMessageToClient: IWSMessageToClient) => s.next(wsMessageToClient);
     }
 }

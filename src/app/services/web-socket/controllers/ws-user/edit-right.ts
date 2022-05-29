@@ -17,7 +17,7 @@ export class WSEditRightsEndpoint extends WSEndPointAbstract{
     public tryGet(itemToLock: IItemLockModel): Observable<boolean> {
         super.post(itemToLock);
 
-        return super.post$.pipe(
+        return this.post$.pipe(
             take(1)
         );
     }

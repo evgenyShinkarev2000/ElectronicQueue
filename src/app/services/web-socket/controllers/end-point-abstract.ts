@@ -45,6 +45,6 @@ export abstract class WSEndPointAbstract{
     }
 
     private changeEmitter(s: Subject<any>): Function{
-        return (wsMessageToClient: IWSMessageToClient) => s.next(wsMessageToClient.clientData);
+        return (clientData: any) => s.next(clientData);
     }
 }

@@ -15,7 +15,7 @@ export class WebSocketProvider {
     private _reconnectCount: number = 0;
 
     constructor(private _httpClient: HttpClient, private _authService: AuthService) {
-        this.connect();
+        // this.connect();
     }
 
     public disconnect(): void{
