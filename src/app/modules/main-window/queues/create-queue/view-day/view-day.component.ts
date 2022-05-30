@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { EQDay } from "../../../../../models/EQDay";
+import { EQDayPattern } from "../../../../../models/EQDayPattern";
 
 @Component({
     selector: 'app-view-day',
@@ -9,7 +9,7 @@ import { EQDay } from "../../../../../models/EQDay";
 export class ViewDayComponent implements OnInit {
 
     @Input()
-    public day: EQDay;
+    public day: EQDayPattern;
     constructor() {
     }
 

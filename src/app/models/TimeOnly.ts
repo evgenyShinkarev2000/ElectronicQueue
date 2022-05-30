@@ -1,3 +1,5 @@
+import { round } from "@popperjs/core/lib/utils/math";
+
 export class TimeOnly {
     public get minutes(): number {
         return this._minutes;
@@ -8,7 +10,7 @@ export class TimeOnly {
             throw new Error();
         }
 
-        this._minutes = value;
+        this._minutes = round(value);
     }
 
     public get hours(): number {
@@ -71,8 +73,8 @@ export class TimeOnly {
         return new TimeOnly(null, this.hours, this.minutes);
     }
 
-    public toDTO(): number {
-        return this.toMinutes();
+    public toDTO(): string {
+        return this.toMinutes().toString();
     }
 
 }

@@ -1,8 +1,22 @@
 import { EQRecordPattern } from "./EQueueRecordPattern";
 import { TimeOnly } from "./TimeOnly";
+import { IEQDayPatternTransfer } from "./transfer/EQDayPatternTransfer.interface";
+import { IEQRecordPatternTransfer } from "./transfer/EQRecordPatternTransfer.inteface";
+import { round } from "@popperjs/core/lib/utils/math";
 
-export class EQDay {
+export class EQDayPattern {
+    public static fromDTO(obj: IEQDayPatternTransfer): EQDayPattern {
+        const day: EQDayPattern = new EQDayPattern(obj.records.map((record: IEQRecordPatternTransfer) => {
+            return EQRecordPattern.fromDTO(record);
+        }));
+        day.creatorId = obj.creatorId;
+        day.name = obj.name;
+
+        return day;
+    }
+
     public name: string = "";
+    public creatorId: string;
     private _records: EQRecordPattern[] = [];
     public get records(): Readonly<EQRecordPattern[]> {
         return this._records;
@@ -23,9 +37,17 @@ export class EQDay {
 
     private _beginTime: TimeOnly = new TimeOnly();
 
-    constructor() {
-    }
+    constructor(records?: EQRecordPattern[]) {
+        if (records) {
+            records.forEach((record: EQRecordPattern) => {
+                this.tryAddEnd(record);
+            });
 
+            if (this._records.length > 0) {
+                this._beginTime = records[0].beginTime.getCopy();
+            }
+        }
+    }
 
     /**
      * смещает все записи назад
@@ -81,20 +103,44 @@ export class EQDay {
         });
     }
 
-    public removeRecord(recordIndex: number): void{
-        if (recordIndex < 0 || recordIndex >= this._records.length){
+    public removeRecord(recordIndex: number): void {
+        if (recordIndex < 0 || recordIndex >= this._records.length) {
             throw new Error();
         }
 
         this._records.splice(recordIndex, 1);
     }
 
-    public toDTO(): object{
+    public toDTO(): IEQDayPatternTransfer {
         return {
             "name": this.name,
             "records": this.records.map((record: EQRecordPattern) => record.toDTO()),
-            "beginTimeMinutes": this.beginTime.toDTO()
+            "creatorId": this.creatorId
         };
     }
 
+    public getCopy(): EQDayPattern {
+        const copy: EQDayPattern = new EQDayPattern(this._records.map((record: EQRecordPattern) => record.getCopy()));
+        copy.name = this.name;
+        copy.creatorId = this.creatorId;
+
+        return copy;
+    }
+
+    public getRestRecords(): EQRecordPattern[] {
+        return this._records.filter((record: EQRecordPattern) => record.type === "rest");
+    }
+
+    public getReceptionRecords(): EQRecordPattern[] {
+        return this._records.filter((record: EQRecordPattern) => record.type === "reception");
+    }
+
+    public getReceptionDuration(): TimeOnly {
+        let minutes: number = 0;
+        this.getReceptionRecords().forEach((record: EQRecordPattern) => {
+            minutes += record.duration;
+        });
+
+        return TimeOnly.fromMinutes(minutes);
+    }
 }

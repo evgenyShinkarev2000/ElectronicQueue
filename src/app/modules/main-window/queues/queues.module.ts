@@ -10,6 +10,11 @@ import { ViewDayComponent } from './create-queue/view-day/view-day.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RecordPatternComponent } from './create-queue/record-pattern/record-pattern.component';
 import { QueuesComponent } from "./queues.component";
+import { DayCardComponent } from './create-queue/day-card/day-card.component';
+import { CreateScheduleComponent } from './create-queue/create-schedule/create-schedule.component';
+import { CreateWeekComponent } from './create-queue/create-week/create-week.component';
+import { AddDayComponent } from './create-queue/create-week/add-day/add-day.component';
+import { ViewWeekComponent } from './create-queue/view-week/view-week.component';
 
 @NgModule({
     declarations: [
@@ -19,7 +24,12 @@ import { QueuesComponent } from "./queues.component";
         MyQueueComponent,
         CreateDayComponent,
         ViewDayComponent,
-        RecordPatternComponent
+        RecordPatternComponent,
+        DayCardComponent,
+        CreateScheduleComponent,
+        CreateWeekComponent,
+        AddDayComponent,
+        ViewWeekComponent
     ],
     imports: [
         CommonModule,

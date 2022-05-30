@@ -8,7 +8,7 @@ import { TestLifeTimeService } from "../../../services/test-life-time/test-life-
 })
 export class PersonalAccountComponent implements OnInit {
 
-  constructor(test: TestLifeTimeService) { }
+  constructor() { }
 
   ngOnInit(): void {
   }

@@ -1,7 +1,16 @@
 import { EQRecordType } from "./EQRecordType";
 import { TimeOnly } from "./TimeOnly";
+import { IEQRecordPatternTransfer } from "./transfer/EQRecordPatternTransfer.inteface";
 
 export class EQRecordPattern {
+    public static fromDTO(obj: IEQRecordPatternTransfer): EQRecordPattern{
+        return new EQRecordPattern(
+            TimeOnly.fromMinutes(parseInt(obj.beginTime)),
+            TimeOnly.fromMinutes(parseInt(obj.endTime)),
+            obj.type
+        );
+    }
+
     public beginTime: TimeOnly;
     public endTime: TimeOnly;
     public type: EQRecordType;
@@ -20,11 +29,19 @@ export class EQRecordPattern {
         this.type = type;
     }
 
-    public toDTO(): object{
+    public toDTO(): IEQRecordPatternTransfer{
         return {
-            "beginTimeMinutes": this.beginTime.toDTO(),
-            "endTimeMinutes": this.endTime.toDTO(),
+            "beginTime": this.beginTime.toDTO(),
+            "endTime": this.endTime.toDTO(),
             "type": this.type
         };
+    }
+
+    public toString(): string{
+        return `${this.beginTime.toString()}-${this.endTime.toString()}`;
+    }
+
+    public getCopy(): EQRecordPattern{
+        return new EQRecordPattern(this.beginTime.getCopy(), this.endTime.getCopy(), this.type);
     }
 }

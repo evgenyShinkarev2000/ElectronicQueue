@@ -21,8 +21,6 @@ type SortOption = typeof sortOptions[number];
     styleUrls: ['./accounts.component.scss'],
 })
 export class AccountsComponent implements OnInit, OnDestroy {
-
-    public viewUsers: ILockItemViewModel[] = [];
     public readonly sortOptions: typeof sortOptions = sortOptions;
     public readonly sortOptionsName: { [key in SortOption]: string } = {
         firstName: "Имя по возрастанию",
@@ -38,7 +36,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
         [UserRole.OPERATOR]: { name: "Операторы", selected: true },
         [UserRole.CLIENT]: { name: "Клиенты", selected: true }
     };
-    private _allUsers: ILockItemViewModel[] = [];
+
+    public allUsers: ILockItemViewModel[] = [];
     private readonly _subscriptions: Subscription[] = [];
     private _wsUserEndPoints: IWSUserEndPoints;
 
@@ -46,75 +45,34 @@ export class AccountsComponent implements OnInit, OnDestroy {
         this._wsUserEndPoints = _wsUserController.getWSUserEndPoints();
     }
 
+    public readonly propSelector: (x: ILockItemViewModel) => UserRole = (x: ILockItemViewModel) => x.item.role;
+
     public ngOnInit(): void {
-        // this._subscriptions.push(
-        //     this._wsUserController.updateLock$.subscribe((itemToUpdateLock: IItemLockModel) => {
-        //         let index: number = this._allUsers.findIndex((item: ILockItemViewModel) => item.id === itemToUpdateLock.itemId);
-        //         if (index < 0) {
-        //             return;
-        //         }
-        //         this._allUsers[index].lockState = itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;
-        //         index = this.viewUsers.findIndex((item: ILockItemViewModel) => item.id === itemToUpdateLock.itemId);
-        //         if (index < 0) {
-        //             return;
-        //         }
-        //         this.viewUsers[index].lockState = itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;
-        //     })
-        // );
         this._subscriptions.push(
             this._wsUserEndPoints.editRight.update$.subscribe((itemToUpdateLock: IItemLockModel) => {
-                let index: number = this._allUsers.findIndex((item: ILockItemViewModel) => item.id === itemToUpdateLock.itemId);
+                const index: number = this.allUsers.findIndex((item: ILockItemViewModel) => item.id === itemToUpdateLock.itemId);
                 if (index < 0) {
                     return;
                 }
-                this._allUsers[index].lockState = itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;
-                index = this.viewUsers.findIndex((item: ILockItemViewModel) => item.id === itemToUpdateLock.itemId);
-                if (index < 0) {
-                    return;
-                }
-                this.viewUsers[index].lockState = itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;
+                this.allUsers[index].lockState = itemToUpdateLock.status === "Free" ? ItemLockState.free : ItemLockState.lock;
             })
         );
         this.hasConnection = this._wsUserController.checkConnection();
         this._subscriptions.push(this._wsUserController.connectionState$.subscribe((connectionState: boolean) => {
             this.hasConnection = connectionState;
         }));
-        // this._subscriptions.push(this._wsUserController.updateUser$.subscribe((user: IUserLocked) => {
-        //     let index: number = this._allUsers.findIndex((item: ILockItemViewModel) => item.id === user.id);
-        //     if (index >= 0) {
-        //         this._allUsers[index].item = user;
-        //     }
-        //     index = this.viewUsers.findIndex((item: ILockItemViewModel) => item.id === user.id);
-        //     if (index >= 0) {
-        //         this.viewUsers[index].item = user;
-        //     }
-        // }));
         this._subscriptions.push(this._wsUserEndPoints.user.update$.subscribe((user: IUserLocked) => {
-            let index: number = this._allUsers.findIndex((item: ILockItemViewModel) => item.id === user.id);
+            const index: number = this.allUsers.findIndex((item: ILockItemViewModel) => item.id === user.id);
             if (index >= 0) {
-                this._allUsers[index].item = user;
-            }
-            index = this.viewUsers.findIndex((item: ILockItemViewModel) => item.id === user.id);
-            if (index >= 0) {
-                this.viewUsers[index].item = user;
+                this.allUsers[index].item = user;
             }
         }));
-        // this._subscriptions.push(this._wsUserController.deleteUser$.subscribe((user: IUser) => {
-        //     this._allUsers = this._allUsers.filter((item: ILockItemViewModel) => item.id !== user.id);
-        //     this.viewUsers = this._allUsers.filter((item: ILockItemViewModel) => item.id !== user.id);
-        // }));
         this._subscriptions.push(this._wsUserEndPoints.user.delete$.subscribe((user: IUser) => {
-            this._allUsers = this._allUsers.filter((item: ILockItemViewModel) => item.id !== user.id);
-            this.viewUsers = this._allUsers.filter((item: ILockItemViewModel) => item.id !== user.id);
+            this.allUsers = this.allUsers.filter((item: ILockItemViewModel) => item.id !== user.id);
         }));
 
-        // this._subscriptions.push(this._wsUserController.addUser$.subscribe((user: IUser) => {
-        //     this._allUsers.push({ lockState: ItemLockState.free, item: user, id: user.id });
-        //     this.applyFilterAndSort();
-        // }));
         this._subscriptions.push(this._wsUserEndPoints.user.post$.subscribe((user: IUser) => {
-            this._allUsers.push({ lockState: ItemLockState.free, item: user, id: user.id });
-            this.applyFilterAndSort();
+            this.allUsers.push({ lockState: ItemLockState.free, item: user, id: user.id });
         }));
     }
 
@@ -124,21 +82,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
 
     public loadUsers(): void {
-        // this._wsUserController.getAllUser()
-        //     .pipe(take(1))
-        //     .subscribe((users: IUserLocked[]) => {
-        //         const items: ILockItemViewModel[] = users.map((user: IUserLocked) => {
-        //             const item: ILockItemViewModel = {
-        //                 item: user as IUser,
-        //                 id: user.id,
-        //                 lockState: user.lockStatus === "Free" ? ItemLockState.free : ItemLockState.lock
-        //             };
-        //
-        //             return item;
-        //         });
-        //         this._allUsers = items;
-        //         this.applyFilterAndSort();
-        //     });
         this._wsUserEndPoints.allUsers.get();
         this._wsUserEndPoints.allUsers.post$
             .pipe(take(1))
@@ -152,35 +95,20 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
                     return item;
                 });
-                this._allUsers = items;
-                this.applyFilterAndSort();
+                this.allUsers = items;
             });
     }
 
     public changeFilterMode(userRole: UserRole): void {
         this.roleFilterModel[userRole].selected = !this.roleFilterModel[userRole].selected;
-        this.applyFilter();
     }
 
-    public applyFilterAndSort(): void {
-        this.applyFilter();
-        this.applySort();
+    public getPassValues(): UserRole[]{
+        return Object.keys(this.roleFilterModel).filter((userRole: string) =>
+            this.roleFilterModel[userRole as UserRole].selected) as UserRole[];
     }
 
-    public applyFilter(): void {
-        this.viewUsers = this._allUsers.filter((user: ILockItemViewModel) => {
-            const userRole: string = user.item.role.toUpperCase();
-            if (!(userRole in UserRole)) {
-                console.log("неизвестная роль");
-
-                return false;
-            }
-
-            return this.roleFilterModel[userRole as unknown as keyof typeof UserRole].selected;
-        });
-    }
-
-    public applySort(): void {
+    public getComparer(): (x: ILockItemViewModel, y: ILockItemViewModel) => number {
         console.log("sorted");
         const selector: { [key in SortOption]: (a: ILockItemViewModel, b: ILockItemViewModel) => number } = {
             firstName: (a: ILockItemViewModel, b: ILockItemViewModel) => a.item.firstName.localeCompare(b.item.firstName),
@@ -188,6 +116,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
             firstNameDesc: (a: ILockItemViewModel, b: ILockItemViewModel) => -a.item.firstName.localeCompare(b.item.firstName),
             secondNameDesc: (a: ILockItemViewModel, b: ILockItemViewModel) => -a.item.secondName.localeCompare(b.item.secondName)
         };
-        this.viewUsers.sort(selector[this.sortState]);
+
+        return selector[this.sortState];
     }
 }

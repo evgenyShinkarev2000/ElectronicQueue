@@ -15,7 +15,7 @@ export class MainWindowComponent  {
     public readonly links: ILink[] = [
         { text: "Учетные записи", routerLink: "accounts", ngxOnly: [UserRole.ADMIN] },
         { text: "Очереди", routerLink: "queues", ngxOnly: [PermissionType.canAuthorizedWatch] },
-        { text: "Конкретная очередь", routerLink: "queue", ngxOnly: [PermissionType.canAuthorizedWatch] },
+        { text: "Запись", routerLink: "registration", ngxOnly: [PermissionType.canAuthorizedWatch] },
         { text: "Личный кабинет", routerLink: "personal_account", ngxOnly: [UserRole.ADMIN, UserRole.CLIENT] }
     ];
 

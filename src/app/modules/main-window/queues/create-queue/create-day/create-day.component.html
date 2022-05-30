@@ -4,7 +4,8 @@
       <div class="form-control-block">
         <span class="form-control-info">Название дня</span>
         <input type="text" formControlName="dayName">
-        <small class="text-danger" *ngIf="infoForm.get('dayName').errors?.['required']">Название обязательно</small>
+        <small class="text-danger" *ngIf="infoForm.get('dayName').errors?.['required']">Название
+          обязательно</small>
       </div>
       <div class="form-control-block">
         <span class="form-control-info">Начало приема</span>
@@ -29,12 +30,14 @@
       <div class="form-control-block" *ngIf="radioValue === 'reception'">
         <span class="form-control-info">Количество</span>
         <input type="number" formControlName="count">
-        <small class="text-danger" *ngIf="actionsForm.get('count').invalid">Нужно указать целое число более 0</small>
+        <small class="text-danger" *ngIf="actionsForm.get('count').invalid">Нужно указать целое число более
+          0</small>
       </div>
       <div class="form-control-block">
         <span class="form-control-info">Тип записи</span>
         <label>
-          <input class="radio-marker" type="radio" name="record-type" value="reception" id="radio-record-type-reception"
+          <input class="radio-marker" type="radio" name="record-type" value="reception"
+                 id="radio-record-type-reception"
                  (click)="changeType('reception')"
                  [checked]="radioValue === 'reception'">
           <span class="radio-span">Прием</span>
@@ -60,7 +63,15 @@
       <span [class.text-danger]="findEndTime().length > 5">{{findEndTime()}}</span>
     </div>
     <div class="form-control-block">
-      <button class="btn btn-primary" [disabled]="infoForm.invalid" (click)="saveDay()">Сохранить шаблон</button>
+      <button class="btn btn-primary me-3" *ngIf="!isOverrideMode" [disabled]="infoForm.invalid" (click)="saveDay()">Сохранить шаблон</button>
+      <button class="btn btn-warning me-3" *ngIf="isOverrideMode" [disabled]="infoForm.invalid" (click)="overrideDay()">Обновить шаблон</button>
+      <button class="btn btn-danger" (click)="clear()">Очистить</button>
     </div>
+  </div>
+  <div class="day-cards">
+    <app-day-card *ngFor="let dayCard of dayCards"
+                  [day]="dayCard"
+                  (removeDayEvent)="removeDay($event)"
+    (editDayEvent)="loadDay($event)" ></app-day-card>
   </div>
 </section>

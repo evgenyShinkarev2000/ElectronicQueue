@@ -5,6 +5,8 @@ import { AllQueueComponent } from "./all-queue/all-queue.component";
 import { CreateQueueComponent } from "./create-queue/create-queue.component";
 import { CreateDayComponent } from "./create-queue/create-day/create-day.component";
 import { QueuesComponent } from "./queues.component";
+import { CreateScheduleComponent } from "./create-queue/create-schedule/create-schedule.component";
+import { CreateWeekComponent } from "./create-queue/create-week/create-week.component";
 
 const routes: Routes = [
     {
@@ -26,6 +28,14 @@ const routes: Routes = [
                     {
                         path: "day",
                         component: CreateDayComponent
+                    },
+                    {
+                        path: "schedule",
+                        component: CreateScheduleComponent
+                    },
+                    {
+                        path: "week",
+                        component: CreateWeekComponent
                     }
                 ]
             }

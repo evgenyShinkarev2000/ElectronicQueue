@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainWindowComponent } from "./main-window.page.component";
-import { AccountsComponent } from "./accounts/accounts.component";
-import { QueuesComponent } from "./queues/queues.component";
 import { PersonalAccountComponent } from "./personal-account/personal-account.component";
 
 const routes: Routes = [
@@ -18,7 +16,11 @@ const routes: Routes = [
                 path: "queues",
                 loadChildren: () => import("./queues/queues.module").then(m => m.QueuesModule)
             },
-            { path: "personal_account", component: PersonalAccountComponent }
+            { path: "personal_account", component: PersonalAccountComponent },
+            {
+                path: "registration",
+                loadChildren: () => import("./registration/registration.module").then(m => m.RegistrationModule)
+            }
         ]
     }
 ];
