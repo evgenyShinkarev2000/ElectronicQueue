@@ -32,6 +32,7 @@ export class CreateDayComponent implements OnInit, OnDestroy {
     public day: EQDayPattern = new EQDayPattern();
     public dayCards: EQDayPattern[] = [];
     public isOverrideMode: boolean = false;
+    public isLoading: boolean = true;
 
     private readonly _subscriptions: Subscription[] = [];
 
@@ -45,7 +46,10 @@ export class CreateDayComponent implements OnInit, OnDestroy {
             this.day.changeBeginTimeShiftRecords(new TimeOnly(value));
         }));
         this._subscriptions.push(this._queuePatternController.getAllDayPatterns().subscribe((data: EQDayPattern[]) => {
-            this.dayCards = data;
+            setTimeout(() => {
+                this.isLoading = false;
+                this.dayCards = data;
+            }, 5000);
         }));
         this._subscriptions.push(this.infoForm.get("dayName").valueChanges.subscribe((name: string) => {
             const index: number = this.dayCards.findIndex((day: EQDayPattern) => day.name === name);
@@ -54,7 +58,7 @@ export class CreateDayComponent implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy(): void {
-        this._subscriptions.forEach((sub:Subscription) => sub.unsubscribe());
+        this._subscriptions.forEach((sub: Subscription) => sub.unsubscribe());
     }
 
     public canAddRecords(): boolean {
@@ -97,7 +101,7 @@ export class CreateDayComponent implements OnInit, OnDestroy {
         }
     }
 
-    public saveDay(): void{
+    public saveDay(): void {
         this.day.name = this.infoForm.get("dayName").value;
         this.day.creatorId = this._authService.userAuthData.id;
 
@@ -110,14 +114,13 @@ export class CreateDayComponent implements OnInit, OnDestroy {
         this.clear();
     }
 
-    public overrideDay(): void{
+    public overrideDay(): void {
         const updatedDay: EQDayPattern = this.day;
         const s: Subscription = this._queuePatternController.updateDayPattern(this.day).subscribe((next: any) => {
             const index: number = this.dayCards.findIndex((oldDay: EQDayPattern) => oldDay.name === updatedDay.name);
-            if (index >= 0){
+            if (index >= 0) {
                 this.dayCards[index] = updatedDay;
-            }
-            else{
+            } else {
                 throw new Error("Выбран режим перезаписи, но нет дня для обновлени");
             }
         });
@@ -125,19 +128,19 @@ export class CreateDayComponent implements OnInit, OnDestroy {
         this.clear();
     }
 
-    public clear(): void{
+    public clear(): void {
         this.day = new EQDayPattern();
         this.day.changeBeginTimeShiftRecords(new TimeOnly("09:00"));
         this.infoForm.get("dayName").reset();
     }
 
-    public loadDay(day: EQDayPattern): void{
+    public loadDay(day: EQDayPattern): void {
         this.day = day.getCopy();
         this.infoForm.get("dayName").setValue(day.name);
         this.infoForm.get("receptionBegin").setValue(day.beginTime.toString());
     }
 
-    public removeDay(name: string): void{
+    public removeDay(name: string): void {
         this._subscriptions.push(this._queuePatternController.deleteDayPattern(name).subscribe((next: any) => {
             this.dayCards = this.dayCards.filter((day: EQDayPattern) => day.name !== name);
         }));

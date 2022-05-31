@@ -1,0 +1,20 @@
+.frame{
+  border-radius: 100%;
+  $dark: 200;
+  $light: 240;
+  background-color: rgb($dark, $dark, $dark);
+  opacity: 0.75;
+  filter: blur(1px);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  .inner{
+    border-radius: 100%;
+    width: 90%;
+    height: 90%;
+    background-color: rgb($light, $light, $light);
+  }
+}

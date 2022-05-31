@@ -1,0 +1,39 @@
+<table class="table table-bordered table-sm component">
+  <tbody>
+  <tr>
+    <td></td>
+    <td>
+      <button class="edit-btn btn" (click)="editDay()"></button>
+      <button class="remove-btn btn" (click)="removeDay()"></button>
+    </td>
+  </tr>
+  <tr>
+    <td>Название</td>
+    <td>{{day.name}}</td>
+  </tr>
+  <tr>
+    <td>Начало</td>
+    <td>{{day.beginTime.toString()}}</td>
+  </tr>
+  <tr>
+    <td>Конец</td>
+    <td>{{day.endTime.toString()}}</td>
+  </tr>
+  <tr>
+    <td>Перерыв</td>
+    <td>{{getRestString()}}</td>
+  </tr>
+  <tr>
+    <td>Приемов</td>
+    <td>{{day.getReceptionRecords().length}}</td>
+  </tr>
+  <tr>
+    <td>Рабочее время</td>
+    <td>{{findReceptionTime()}}</td>
+  </tr>
+  <tr>
+    <td>~время на прием</td>
+    <td>{{findMiddleReceptionTime()}}</td>
+  </tr>
+  </tbody>
+</table>

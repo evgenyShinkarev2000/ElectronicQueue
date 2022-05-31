@@ -1,0 +1,8 @@
+<div class="create-week">
+  <div class="current-week">
+  <app-add-day class="week-day" *ngFor="let weekDay of currentWeek"
+               [weekDayName]="weekDay.weekDayName"
+               [dayPatterns]="dayPatterns"></app-add-day>
+  </div>
+  <div class="week-patterns"></div>
+</div>

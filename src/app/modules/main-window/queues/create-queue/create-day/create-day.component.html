@@ -73,5 +73,9 @@
                   [day]="dayCard"
                   (removeDayEvent)="removeDay($event)"
     (editDayEvent)="loadDay($event)" ></app-day-card>
+
+    <ng-container *ngFor="let i of [1, 2, 3]">
+      <ng-template *appRectangleSkeleton="isLoading; height: 300; width: 200;"></ng-template>
+    </ng-container>
   </div>
 </section>

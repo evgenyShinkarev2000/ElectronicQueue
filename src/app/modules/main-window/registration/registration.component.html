@@ -1,0 +1,10 @@
+<div class="sub-header">
+  <div class="sub-header-item" *ngxPermissionsOnly="[UserRole.OPERATOR, UserRole.ADMIN, UserRole.CLIENT]">
+    <a [routerLink]="'all_queue'" routerLinkActive="active">Все очереди</a>
+  </div>
+  <div class="sub-header-item" *ngxPermissionsOnly="[UserRole.OPERATOR, UserRole.ADMIN, UserRole.CLIENT]">
+    <a [routerLink]="'my_booking'">Мои Записи</a>
+  </div>
+
+</div>
+<router-outlet></router-outlet>

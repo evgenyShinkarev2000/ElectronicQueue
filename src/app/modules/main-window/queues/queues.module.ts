@@ -15,6 +15,8 @@ import { CreateScheduleComponent } from './create-queue/create-schedule/create-s
 import { CreateWeekComponent } from './create-queue/create-week/create-week.component';
 import { AddDayComponent } from './create-queue/create-week/add-day/add-day.component';
 import { ViewWeekComponent } from './create-queue/view-week/view-week.component';
+import { RectangleSkeletonDirective } from "../../../directives/struct/rectangle-skeleton.directive";
+import { GrayDirective } from "../../../directives/style/gray.directive";
 
 @NgModule({
     declarations: [
@@ -29,7 +31,8 @@ import { ViewWeekComponent } from './create-queue/view-week/view-week.component'
         CreateScheduleComponent,
         CreateWeekComponent,
         AddDayComponent,
-        ViewWeekComponent
+        ViewWeekComponent,
+        RectangleSkeletonDirective
     ],
     imports: [
         CommonModule,

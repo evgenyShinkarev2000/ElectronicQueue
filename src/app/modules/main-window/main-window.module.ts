@@ -15,12 +15,14 @@ import { CreateQueueComponent } from './queues/create-queue/create-queue.compone
 import { AllQueueComponent } from './queues/all-queue/all-queue.component';
 import { MyQueueComponent } from './queues/my-queue/my-queue.component';
 import { WSUserController } from "../../services/web-socket/controllers/ws-user/ws-user-controller.service";
+import { EllipseSkeletonDirective } from "../../directives/struct/ellips-skeleton.directive";
 
 
 @NgModule({
     declarations: [
         MainWindowComponent,
-        PersonalAccountComponent
+        PersonalAccountComponent,
+        EllipseSkeletonDirective
     ],
     imports: [
         CommonModule,
